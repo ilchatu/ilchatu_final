@@ -1,0 +1,32 @@
+.table-container {
+  overflow-x: auto; /* Enable horizontal scrolling if needed */
+  overflow-y: auto;
+  height: 500px;
+}
+
+@media screen and (max-width: 1200px) and (min-width: 800px) {
+  .table-container {
+    overflow-x: auto; /* Enable horizontal scrolling if needed */
+    overflow-y: auto;
+    height: 500px;
+  }
+}
+
+@media screen and (max-width: 800px) and (min-width: 600px) {
+  .table-container {
+    overflow-x: auto; /* Enable horizontal scrolling if needed */
+    overflow-y: auto;
+    height: 500px;
+    width: 500px;
+  }
+}
+
+@media screen and (max-width: 600px) and (min-width: 300px) {
+  .table-container {
+    overflow-x: auto; /* Enable horizontal scrolling if needed */
+    overflow-y: auto;
+    height: 500px;
+    width: 300px;
+  }
+}
+
