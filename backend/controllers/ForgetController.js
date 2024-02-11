@@ -20,7 +20,7 @@ const ForgotPassword = async (req, res) => {
     user.verificationToken = resetToken;
     await user.save();
 
-    const link = `${process.env.BASE_URL}ResetNewPassword/${user._id}/${resetToken}`;
+    // const link = `${process.env.BASE_URL}ResetNewPassword/${user._id}/${resetToken}`;
     const link = `https://ilcha.onrender.com/ResetNewPassword/${user._id}/${resetToken}`;
 
     const transporter = nodemailer.createTransport({
