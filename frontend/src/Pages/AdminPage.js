@@ -38,8 +38,8 @@ const AdminPage = () => {
   const sidebarItems = [
     { name: 'Dashboard', icon: '🏠' },
     // { name: 'Admin Management', icon: '⚙️' },
-    { name: 'Reports', icon: '🚫' },
-    { name: 'Announcements', icon: '👥' },
+    { name: 'Reports', icon: '📑' },
+    { name: 'Announcements', icon: '📢' },
     { name: 'Users', icon: '👥' },
   ];
 
@@ -53,7 +53,7 @@ const AdminPage = () => {
         <div className="sidebar">
           <div className="sidebar-header">
             <h1>iLchatU</h1>
-            <button className="close-button" onClick={handleSidebarClose} style={{ fontSize: '24px', fontWeight: 'bold' }}>
+            <button className="close-button ${isSidebarOpen ? 'hidden' :" onClick={handleSidebarClose} style={{ fontSize: '30px', fontWeight: 'bold' }}>
             ☰ 
             </button>
           </div>
@@ -72,10 +72,10 @@ const AdminPage = () => {
             ))}
           </ul>
           {/* Logout button at the bottom */}
-          <ul style={{ marginTop: '220%' }}>
-            <li onClick={handleLogout}>
+          <ul style={{ marginTop: '120%', textAlign: 'center'}}>
+            <li onClick={handleLogout} style={{ textDecoration: 'underline', cursor: 'pointer' }}>
               <span role="img" aria-label="Logout">
-                🚶‍♂️
+                
               </span>
               Logout
             </li>
