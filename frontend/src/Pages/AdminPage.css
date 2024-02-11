@@ -1,0 +1,87 @@
+/* AdminPage.css */
+
+.admin-page {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar-icon {
+  cursor: pointer;
+  font-size: 2.0em;
+  margin-right: -5px;
+  margin-left: 10px;
+  color: white;
+  padding: 10px;
+  transition: margin-left 0.3s ease;
+}
+
+.sidebar-icon.open {
+  margin-right: 220px; 
+}
+
+.sidebar {
+  background-color: #333;
+  color: #fff;
+  padding: 30px;
+  min-width: 200px;
+  transition: min-width 0.3s ease;
+  overflow-x: hidden;
+  position: fixed;
+  transition: 0.5s;
+  padding-top: 60px;
+  z-index: 1;
+  height: 100vh;
+}
+
+.sidebar.open {
+  min-width: 220px; /* Adjust the width to match the expanded sidebar width */
+}
+
+.sidebar-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sidebar h1 {
+  font-size: 1.5em;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.sidebar hr {
+  border-color: #555;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar li.selected {
+  background-color: #4CAF50;
+  color: #fff;
+}
+
+.sidebar li:hover {
+  background-color: #555;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px; /* Adjust this value to fine-tune the vertical position */
+  right: 10px; /* Adjust this value to fine-tune the horizontal position */
+  cursor: pointer;
+}
+
+.main-content {
+flex: 1;
+padding-top: 50px;
+}
+
+/* Add more styling as needed */

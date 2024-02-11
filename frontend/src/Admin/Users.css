@@ -1,0 +1,32 @@
+/* Users.css */
+
+/* Style the container */
+.user-list-container {
+    overflow-y: auto;
+    max-height: 400px;
+  }
+  
+  /* Style the table */
+  .user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px; /* Add some margin for spacing */
+  }
+  
+  /* Style the table headers */
+  .user-table th {
+    background-color: #f2f2f2;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  /* Style the table rows */
+  .user-table td, .user-table th {
+    border: 1px solid #dddddd;
+    padding: 8px;
+  }
+  
+  /* Hover effect on rows */
+  .user-table tbody tr:hover {
+    background-color: #e6f7ff;
+  }

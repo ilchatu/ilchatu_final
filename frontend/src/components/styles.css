@@ -1,0 +1,81 @@
+.messages {
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  background-color: rgb(5, 166, 40);
+  border-radius: 50%;
+  margin-right: 3px;
+  margin-left: 0;
+  animation: typing-animation 1s infinite;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing-animation {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.notification-badge {
+  position: absolute;
+  top: 10px;
+  right: 105px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 4px 8px;
+  font-size: 8px;
+  animation: scaleEffect 0.5s infinite alternate;
+}
+
+@keyframes scaleEffect {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.2);
+  }
+}
+
+/* ///////////////////////////// */
+
+.TabList {
+  display: flex;
+  justify-content: space-around;
+  border-bottom: 1px solid #CBD5E0;
+}
+
+.Tab {
+  cursor: pointer;
+  padding: 8px;
+  text-align: center;
+  opacity: 0.7;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.Tab:hover {
+  opacity: 1;
+}
