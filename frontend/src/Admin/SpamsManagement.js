@@ -8,7 +8,6 @@ import {
   Th,
   Td,
   TableContainer,
-  Button,
 } from "@chakra-ui/react";
 import axios from "axios";
 import moment from "moment";
@@ -28,25 +27,18 @@ const SpamsManagement = () => {
   }, []);
 
   return (
-    <div className="main_admin">
-      <div className="main__container">
-        <div className="main__title">
-          <div className="main__greeting">
-            <h1>Hello Admin</h1>
-            <p>Spam and Reports Dashboard</p>
-          </div>
+    <div className="main__container1">
+      <div className="main__title">
+        <div className="main__greeting">
+          <h1 className="greeting">Hello Admin</h1>
+          <p>Spam and Reports Dashboard</p>
         </div>
-        {report?.length ? (
-          <div className="spam">
-            {/* <ContentList content={admin.spam_posts} /> */}
-
+      </div>
+      {report?.length ? (
+        <div className="spam">
+          <div className="table-scroll">
             <TableContainer
-              className="spam-table"  // Add a custom class to the TableContainer
-              style={{
-                backgroundColor: "white",
-                borderRadius: "5px",
-                padding: "20px",
-              }}
+              className="spam-table" // Add a custom class to the TableContainer
             >
               <Table variant="simple">
                 <Thead>
@@ -61,7 +53,11 @@ const SpamsManagement = () => {
                   {report?.map((item) => (
                     <Tr key={item?._id}>
                       <Td>{moment(item?.createdAt).format("MMM Do YYYY")}</Td>
-                      <Td className="reported-message"> <div className="reported-message-content"> {item?.message} </div></Td>
+                      <Td className="reported-message">
+                        <div className="reported-message-content">
+                          {item?.message}
+                        </div>
+                      </Td>
                       <Td>{item?.user?.name}</Td>
                       <Td>{item?.user?.email}</Td>
                     </Tr>
@@ -70,8 +66,8 @@ const SpamsManagement = () => {
               </Table>
             </TableContainer>
           </div>
-        ) : null}
-      </div>
+        </div>
+      ) : null}
     </div>
   );
 };
