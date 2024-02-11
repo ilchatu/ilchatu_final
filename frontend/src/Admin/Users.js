@@ -25,14 +25,14 @@ const Users = () => {
   );
 
   return (
-    <div className="user-list-container">
-      <h2>User List</h2>
-      <div className="search-container">
-        <label htmlFor="search">Search:</label>
+    <div className="user-list-container" style={{ overflowY: 'auto'}}>
+      <h2>iLchatUsers</h2>
+      <div className="search-container" style={{ textAlign: "center"}}>
+        <label htmlFor="search" className='user1'>Search:</label>
         <input
           type="text"
           id="search"
-          placeholder="Enter user name"
+          placeholder="Enter name"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -40,16 +40,16 @@ const Users = () => {
       <table className="user-table">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Email</th>
+            <th style={{ textAlign: "center", color: "green" }}>Name</th>
+            <th style={{ textAlign: "center", color: "green"}}>Email</th>
             {/* Add more table headers as needed */}
           </tr>
         </thead>
         <tbody>
           {Array.isArray(filteredUsers) && filteredUsers.map(user => (
             <tr key={user._id}>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
+              <td className='user1'>{user.name}</td>
+              <td className='user2'>{user.email}</td>
               {/* Add more table cells as needed */}
             </tr>
           ))}
