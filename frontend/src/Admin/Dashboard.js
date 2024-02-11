@@ -61,13 +61,15 @@ const Dashboard = () => {
   if (error) {
     return <p>Error: {error}</p>;
   }
+  
+
 
   return (
     <div className="main_admin">
       <div className="main__container">
         <div className="main__title">
           <div className="main__greeting">
-            <h1>Hello Admin</h1>
+            <h1>DASHBOARD</h1>
             <p>Welcome to your Admin Dashboard</p>
           </div>
         </div>
@@ -82,9 +84,9 @@ const Dashboard = () => {
           </div>
           
           <div className="card_admin">
-            <i className="fas fa-comment fa-2x text-blue" aria-hidden="true"></i>
+            <i className="fas fa-comment fa-2x green" aria-hidden="true"></i>
             <div className="card_inner_admin">
-               <p className="text-primary-p">Total Chats: </p>
+               <p className="text-primary-p">Total Chats:</p>
                <span className="total-count" data-target={totalChats}>0</span>
             </div>
           </div>
