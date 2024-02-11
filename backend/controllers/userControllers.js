@@ -30,10 +30,6 @@ const registerUser = asyncHandler(async (req, res) => {
     pic,
     isVerified: false,
     verificationToken,
-    address,
-    mobileNumber,
-    occupation,
-    Bio,
   });
 
   if (user) {
