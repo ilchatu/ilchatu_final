@@ -1,6 +1,5 @@
 import { Redirect, Route } from "react-router-dom";
 import { ChatState } from "../Context/ChatProvider";
-import { AdminRoute } from "./routes/AdminRoute";
 
 export function AdminRoute({ children, ...rest }) {
   const { user, isLoading } = ChatState();
