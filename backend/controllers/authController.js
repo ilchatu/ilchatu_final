@@ -57,7 +57,7 @@ const verifyUser = async (req, res) => {
     // res.redirect("https://i-l-chatu.onrender.com/");
     // var base_url = "https://i-l-chatu.onrender.com/";
     
-    var base_url = "http://localhost:3000/";
+    var base_url = "https://ilcha.onrender.com/";
     res.redirect(base_url);
   } catch (err) {
     console.error(err);
