@@ -7,41 +7,23 @@
   border-radius: 10px;
   border: 2px solid var(--c1);
   padding: 3px;
-  
 }
 
-.admin_content_display {
-  width: 100%;
-  display: flex;
-  background: #eff0f4;
-  margin: 4px 0;
-  border-radius: 5px;
-}
-.spam .spam_report {
-  font-size: 1.3rem;
-  font-weight: 500;
-  margin: 0 9px;
-}
-.spam .spam_time {
-  font-size: 1rem;
-  margin-left: 10px;
-}
-.spam .spam_username {
-  font-size: 1.3rem;
-  font-weight: 500;
+.table-scroll {
+  max-height: 500px; /* Adjust the max-height as needed */
+  overflow: auto; /* Enable scrolling */
 }
 
-.spam .spam_email {
-  font-size: 1rem;
-  color: var(--c1);
+.spam-table {
+  width: 100%; /* Ensure table takes full width of its container */
 }
 
 .spam-table td:nth-child(2) {
-  max-width: 300px; /* You can adjust the value based on your design */
+  max-width: 100px; /* You can adjust the value based on your design */
+  height: 40px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  overflow-y: auto;
 }
 
 .spam-table .reported-message {
@@ -57,5 +39,55 @@
 .spam-table .reported-message-content::-webkit-scrollbar-thumb {
   background-color: #a0a0a0; /* Adjust the color of the scrollbar thumb */
   border-radius: 10px; /* Adjust the border-radius of the scrollbar thumb */
+}
 
+@media screen and (max-width: 1500px) and (min-width: 1400px) {
+  .table-scroll {
+    height: 500px;
+    width: 1000px;
+    overflow-x: auto;
+    overflow-y: auto;
+  
+  }
+}
+
+@media screen and (max-width: 1400px) and (min-width: 1000px) {
+  .table-scroll {
+    height: 500px;
+    width: 800px;
+    overflow-x: auto;
+    overflow-y: auto;
+  
+  }
+}
+
+@media screen and (max-width: 1000px) and (min-width: 800px) {
+  .table-scroll {
+    height: 500px;
+    width: 600px;
+    overflow-x: auto;
+    overflow-y: auto;
+  }
+}
+
+@media screen and (max-width: 800px) and (min-width: 500px) {
+  .table-scroll {
+    height: 500px;
+    width: 400px;
+    overflow-x: auto;
+    overflow-y: auto;
+  }
+}
+
+@media screen and (max-width: 500px) and (min-width: 350px) {
+  .table-scroll {
+    height: 500px;
+    width: 200px;
+    overflow-x: auto;
+    overflow-y: auto;
+  }
+
+  .greeting {
+    text-align: center;
+  }
 }
