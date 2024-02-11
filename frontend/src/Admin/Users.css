@@ -2,31 +2,81 @@
 
 /* Style the container */
 .user-list-container {
-    overflow-y: auto;
-    max-height: 400px;
+  overflow-y: auto;
+  max-height: calc(100vh - 100px); /* Adjusted max-height */
+  background-color: #f7f2f2;
+  overflow: hidden;
+  width: 55%; /* Default width */
+  margin-left: 17%; /* Default margin */
+  border-radius: 3%;
+  position: fixed;
+  transition: margin-left 0.5s; /* Added transition for smooth animation */
+}
+
+/* Style the table */
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px; /* Add some margin for spacing */
+}
+
+/* Style the table headers */
+.user-table th {
+  background-color: #f2f2f2;
+  padding: 8px;
+  text-align: center;
+}
+
+/* Style the table rows */
+.user-table td, .user-table th {
+  border: 1px solid #3b3737;
+  padding: 8px;
+}
+
+/* Hover effect on rows */
+.user-table tbody tr:hover {
+  background-color: #e6f7ff;
+}
+
+.label .search {
+  font-family: 'Montserrat', sans-serif;
+  padding-right: 10px;
+}
+
+.user1 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 17px;
+  color: rgb(8, 8, 8);
+  align-items: center;
+  padding-right: 10px;
+}
+
+.user2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 17px;
+  color: rgb(8, 8, 8);
+  align-items: center;
+}
+
+/* Media queries for responsiveness */
+@media screen and (max-width: 1200px) and (min-width: 800px) {
+  .user-list-container {
+      width: 75%;
+      margin-left: 5%;
   }
-  
-  /* Style the table */
-  .user-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px; /* Add some margin for spacing */
+}
+
+@media screen and (max-width: 800px) and (min-width: 600px) {
+  .user-list-container {
+      width: 75%;
+      margin-left: 5%;
   }
-  
-  /* Style the table headers */
-  .user-table th {
-    background-color: #f2f2f2;
-    padding: 8px;
-    text-align: left;
+}
+
+@media screen and (max-width: 600px) and (min-width: 300px) {
+  .user-list-container {
+      width: 85%;
+      margin-left: -1%;
+      margin-top: 5%;
   }
-  
-  /* Style the table rows */
-  .user-table td, .user-table th {
-    border: 1px solid #dddddd;
-    padding: 8px;
-  }
-  
-  /* Hover effect on rows */
-  .user-table tbody tr:hover {
-    background-color: #e6f7ff;
-  }
+}
