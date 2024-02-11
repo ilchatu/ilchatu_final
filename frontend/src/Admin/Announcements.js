@@ -29,6 +29,7 @@ import {
 import moment from "moment";
 import { ChatState } from "../Context/ChatProvider";
 import axios from "axios";
+import "./Announcement.css";
 
 const UsersManagement = () => {
   const [isCreateAnnouncementModalOpen, setCreateAnnouncementModalOpen] = useState(false);
@@ -193,15 +194,15 @@ const UsersManagement = () => {
           onClick={() => setCreateAnnouncementModalOpen(true)}
           colorScheme="blue"
           style={{
-            marginTop: "50px",
-            marginBottom: "50px",
+            marginTop: "15px",
+            marginBottom: "20px",
           }}
         >
           Create Announcement
         </Button>
 
         
-        <Modal
+        <Modal 
           isOpen={isCreateAnnouncementModalOpen}
           onClose={() => {
             setCreateAnnouncementModalOpen(false);
@@ -280,62 +281,66 @@ const UsersManagement = () => {
       </>
 
       <TableContainer
-          style={{
-            backgroundColor: "white",
-            borderRadius: "5px",
-            padding: "20px",
-          }}
-        >
-          <Table variant="simple">
-            <Thead>
-              <Tr>
-                <Th>Created</Th>
-                <Th>Title</Th>
-                <Th>Action</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {announcement?.map((item) => (
-                <Tr key={item?._id}>
-                <Td>{moment(item?.createdAt).format("MMM Do YYYY")}</Td>
-                <Td
-                  style={{
-                    maxWidth: "200px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => openContentModal(item)}
-                >
-                  {item?.title}
-                </Td>
-                <Td>
-                <IconButton
-                    icon={<IoEye />}
-                    aria-label="View Announcement"
-                    onClick={() => openContentModal(item)}
-                    colorScheme="blue"
-                    mr={2}
-                  />
-                  <Button
-                    onClick={() => openUpdateAnnouncementModal(item?._id, item?.title)}
-                    colorScheme="blue"
-                    mr={2}
-                  >
-                    EDIT
-                  </Button>
-                  <Button
-                    onClick={() => openDeleteConfirmationModal(item?._id)}
-                    colorScheme="red"
-                  >
-                    Delete
-                  </Button>
-                </Td>
-              </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
+  className="table-container"
+  style={{
+    backgroundColor: "white",
+    borderRadius: "5px",
+    padding: "20px",
+    maxHeight: "500px", // Set maximum height
+    overflowY: "auto", // Enable vertical scrolling if needed
+  }}
+>
+  <Table variant="simple">
+    <Thead>
+      <Tr>
+        <Th>Created</Th>
+        <Th>Title</Th>
+        <Th>Action</Th>
+      </Tr>
+    </Thead>
+    <Tbody>
+      {announcement?.map((item) => (
+        <Tr key={item?._id}>
+          <Td>{moment(item?.createdAt).format("MMM Do YYYY")}</Td>
+          <Td
+            style={{
+              maxWidth: "200px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              cursor: "pointer",
+            }}
+            onClick={() => openContentModal(item)}
+          >
+            {item?.title}
+          </Td>
+          <Td>
+            <IconButton
+              icon={<IoEye />}
+              aria-label="View Announcement"
+              onClick={() => openContentModal(item)}
+              colorScheme="blue"
+              mr={2}
+            />
+            <Button
+              onClick={() => openUpdateAnnouncementModal(item?._id, item?.title)}
+              colorScheme="blue"
+              mr={2}
+            >
+              EDIT
+            </Button>
+            <Button
+              onClick={() => openDeleteConfirmationModal(item?._id)}
+              colorScheme="red"
+            >
+              Delete
+            </Button>
+          </Td>
+        </Tr>
+      ))}
+    </Tbody>
+  </Table>
+</TableContainer>
+
 
         <Modal isOpen={deleteModalOpen} onClose={closeDeleteModal} size="xl">
           <ModalOverlay />
