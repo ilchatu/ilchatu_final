@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ChatState } from '../Context/ChatProvider';
-import { Box, FormControl, IconButton, Input, Spinner, Text, useToast } from '@chakra-ui/react';
-import { ArrowBackIcon, AttachmentIcon } from '@chakra-ui/icons';
+import { Box, FormControl, IconButton, Input, Spinner, Text, useToast, Button } from '@chakra-ui/react';
+import { ArrowBackIcon, AttachmentIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 import { getSender, getSenderFull } from "../config/ChatLogics";
 import ProfileModal from './miscellaneous/ProfileModal';
 import UpdateGroupChatModal from './miscellaneous/UpdateGroupChatModal';
@@ -12,7 +12,7 @@ import { Image } from 'cloudinary-react';
 
 import io from "socket.io-client";
 
-const ENDPOINT = "https://ilcha.onrender.com";
+const ENDPOINT = "http://localhost:5000";
 let socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -114,8 +114,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     });
   }, [notification, selectedChatCompare, setFetchAgain, messages]);
 
-  const sendMessage = async (event) => {
-    if (event.key === "Enter" && newMessage) {
+  const sendMessage = async () => {
+    if (newMessage) {
       socket.emit("stop typing", selectedChat._id);
       try {
         const config = {
@@ -261,73 +261,72 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     setNewMessage(prevMessage => prevMessage + emoji); // Append the selected emoji to the message
   };
 
-    return (
-      <>
-        {selectedChat ? (
-          <>
-            <Text
-              fontSize={{ base: "28px", md: "30px" }}
-              color="white"
-              pb={3}
-              px={2}
-              w="100%"
-              fontFamily="Work sans"
-              display="flex"
-              justifyContent={{ base: "space-between" }}
-              alignItems="center"
-            >
-              <IconButton
-                display={{ base: "flex", md: "none" }}
-                icon={<ArrowBackIcon />}
-                onClick={() => setSelectedChat("")}
-              />
-              {!selectedChat.isGroupChat ? (
-                <>
-                  {getSender(user, selectedChat.users)}
-                  <ProfileModal user={getSenderFull(user, selectedChat.users)} />
-                </>
-              ) : (
-                <>
-                  {selectedChat.chatName.toUpperCase()}
-                  <UpdateGroupChatModal
-                    fetchAgain={fetchAgain}
-                    setFetchAgain={setFetchAgain}
-                    fetchMessages={fetchMessages}
-                  />
-                </>
-              )}
-            </Text>
+  return (
+    <>
+      {selectedChat ? (
+        <>
+          <Text
+            fontSize={{ base: "28px", md: "30px" }}
+            color="white"
+            pb={3}
+            px={2}
+            w="100%"
+            fontFamily="Work sans"
+            display="flex"
+            justifyContent={{ base: "space-between" }}
+            alignItems="center"
+          >
+            <IconButton
+              display={{ base: "flex", md: "none" }}
+              icon={<ArrowBackIcon />}
+              onClick={() => setSelectedChat("")}
+            />
+            {!selectedChat.isGroupChat ? (
+              <>
+                {getSender(user, selectedChat.users)}
+                <ProfileModal user={getSenderFull(user, selectedChat.users)} />
+              </>
+            ) : (
+              <>
+                {selectedChat.chatName.toUpperCase()}
+                <UpdateGroupChatModal
+                  fetchAgain={fetchAgain}
+                  setFetchAgain={setFetchAgain}
+                  fetchMessages={fetchMessages}
+                />
+              </>
+            )}
+          </Text>
 
-            <Box
-              display="flex"
-              flexDir="column"
-              justifyContent="flex-end"
-              p={3}
-              bg="#E8E8E8"
-              w="100%"
-              h="100%"
-              borderRadius="lg"
-              overflowY="hidden"
-            >
-              {loading ? (
-                <Spinner
-                  size={"xl"}
-                  w={20}
-                  h={20}
-                  alignSelf={"center"}
-                  margin={"auto"}
-                />
-              ) : (
-                <ScrollableChat
-                  messages={messages}
-                  setLoading={setLoading}
-                  selectedChat={selectedChat}
-                  setMessages={setMessages}
-                />
-              )}
-              
+          <Box
+            display="flex"
+            flexDir="column"
+            justifyContent="flex-end"
+            p={3}
+            bg="#E8E8E8"
+            w="100%"
+            h="100%"
+            borderRadius="lg"
+            overflowY="hidden"
+          >
+            {loading ? (
+              <Spinner
+                size={"xl"}
+                w={20}
+                h={20}
+                alignSelf={"center"}
+                margin={"auto"}
+              />
+            ) : (
+              <ScrollableChat
+                messages={messages}
+                setLoading={setLoading}
+                selectedChat={selectedChat}
+                setMessages={setMessages}
+              />
+            )}
+
               <FormControl
-                onKeyDown={sendMessage}
                 id="first-name"
                 isRequired
                 mt={3}
@@ -345,39 +344,58 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 ) : (
                   <></>
                 )}
-                <Input
-                  variant="filled"
-                  bg="#E0E0E0"
-                  placeholder="Enter a message..."
-                  value={newMessage}
-                  onChange={typingHandler}
-                  flex="1"
-                  mr="2"
-                />
+                <div style={{ position: 'relative', flex: 1 }}>
+                  <Input
+                    variant="filled"
+                    bg="#E0E0E0"
+                    placeholder="Enter a message..."
+                    value={newMessage}
+                    onChange={typingHandler}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' && !event.shiftKey) {
+                        event.preventDefault(); // Prevent the default behavior of the Enter key
+                        sendMessage(); // Call the sendMessage function
+                      }
+                    }}
+                  />
+                  {newMessage && ( // Show send icon if newMessage is not empty
+                    <IconButton
+                      icon={<ArrowForwardIcon />} // Replace SendIcon with the appropriate icon component
+                      aria-label="Send"
+                      position="absolute"
+                      right="1"
+                      top="50%"
+                      transform="translateY(-50%)"
+                      onClick={sendMessage}
+                      boxSize={8}
+                    />
+                  )}
+                </div>
                 <EmojiPicker onSelectEmoji={handleEmojiSelect} />
                 <IconButton
                   icon={<AttachmentIcon />}
                   aria-label="Attach File"
                   onClick={handleFileSharing}
+                  mr="2"
                 />
               </FormControl>
 
-            </Box>
-          </>
-        ) : (
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            h="100%"
-          >
-            <Text fontSize="3xl" pb={3} fontFamily="Work sans" color="white">
-              Search or Click on a user to start chatting
-            </Text>
           </Box>
-        )}
-      </>
-    );
-  };
+        </>
+      ) : (
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          h="100%"
+        >
+          <Text fontSize="3xl" pb={3} fontFamily="Work sans" color="white">
+            Search or Click on a user to start chatting
+          </Text>
+        </Box>
+      )}
+    </>
+  );
+};
 
-  export default SingleChat;
+export default SingleChat;
