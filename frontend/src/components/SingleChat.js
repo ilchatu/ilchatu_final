@@ -326,59 +326,61 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               />
             )}
 
-              <FormControl
-                id="first-name"
-                isRequired
-                mt={3}
-                display="flex"
-                alignItems="center"
-                position="relative" // Add this line to make the container relative
-              >
-                {istyping ? ( // Move the typing indicator here
-                  <div className="typing-indicator" style={{ position: "absolute", top: "-35px", left: "40px" }}>
-                    <span style={{ fontStyle: "italic", color: "green", marginRight: "5px", fontSize: "14px" }}>Typing</span>
-                    <div className="dot"></div>
-                    <div className="dot"></div>
-                    <div className="dot"></div>
-                  </div>
-                ) : (
-                  <></>
-                )}
-                <div style={{ position: 'relative', flex: 1 }}>
-                  <Input
-                    variant="filled"
-                    bg="#E0E0E0"
-                    placeholder="Enter a message..."
-                    value={newMessage}
-                    onChange={typingHandler}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter' && !event.shiftKey) {
-                        event.preventDefault(); // Prevent the default behavior of the Enter key
-                        sendMessage(); // Call the sendMessage function
-                      }
-                    }}
-                  />
-                  {newMessage && ( // Show send icon if newMessage is not empty
-                    <IconButton
-                      icon={<ArrowForwardIcon />} // Replace SendIcon with the appropriate icon component
-                      aria-label="Send"
-                      position="absolute"
-                      right="1"
-                      top="50%"
-                      transform="translateY(-50%)"
-                      onClick={sendMessage}
-                      boxSize={8}
-                    />
-                  )}
-                </div>
-                <EmojiPicker onSelectEmoji={handleEmojiSelect} />
-                <IconButton
-                  icon={<AttachmentIcon />}
-                  aria-label="Attach File"
-                  onClick={handleFileSharing}
-                  mr="2"
-                />
-              </FormControl>
+<FormControl
+  id="first-name"
+  isRequired
+  mt={3}
+  display="flex"
+  alignItems="center"
+  position="relative" // Add this line to make the container relative
+>
+  {istyping ? ( // Move the typing indicator here
+    <div className="typing-indicator" style={{ position: "absolute", top: "-35px", left: "40px" }}>
+      <span style={{ fontStyle: "italic", color: "green", marginRight: "5px", fontSize: "14px" }}>Typing</span>
+      <div className="dot"></div>
+      <div className="dot"></div>
+      <div className="dot"></div>
+    </div>
+  ) : (
+    <></>
+  )}
+  <div style={{ position: 'relative', flex: 1 }}>
+    <Input
+      variant="filled"
+      bg="#E0E0E0"
+      placeholder="Enter a message..."
+      value={newMessage}
+      onChange={typingHandler}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault(); // Prevent the default behavior of the Enter key
+          sendMessage(); // Call the sendMessage function
+        }
+      }}
+    />
+    {newMessage && ( // Show send icon if newMessage is not empty
+      <IconButton
+        icon={<ArrowForwardIcon />} // Replace SendIcon with the appropriate icon component
+        aria-label="Send"
+        position="absolute"
+        right="1"
+        top="50%"
+        transform="translateY(-50%)"
+        onClick={sendMessage}
+        boxSize={8}
+      />
+    )}
+  </div>
+  <EmojiPicker onSelectEmoji={handleEmojiSelect} />
+  <IconButton
+    icon={<AttachmentIcon />}
+    aria-label="Attach File"
+    onClick={handleFileSharing}
+    mr="2"
+  />
+</FormControl>
+
+
 
           </Box>
         </>
