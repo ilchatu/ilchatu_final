@@ -8,7 +8,7 @@ const Users = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch('https://ilcha.onrender.com/api/users');
+        const response = await fetch('https://ilchatu-a26s.onrender.com/api/users');
         const data = await response.json();
         setUsers(data);
       } catch (error) {
