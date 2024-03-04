@@ -12,7 +12,7 @@ import { Image } from 'cloudinary-react';
 
 import io from "socket.io-client";
 
-const ENDPOINT = "https://ilcha.onrender.com";
+const ENDPOINT = "https://ilchatu-a26s.onrender.com";
 let socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
