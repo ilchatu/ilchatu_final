@@ -21,7 +21,7 @@ const ForgotPassword = async (req, res) => {
     await user.save();
 
     // const link = `${process.env.BASE_URL}ResetNewPassword/${user._id}/${resetToken}`;
-    const link = `https://ilcha.onrender.com/ResetNewPassword/${user._id}/${resetToken}`;
+    const link = `https://ilchatu-a26s.onrender.com/ResetNewPassword/${user._id}/${resetToken}`;
 
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
