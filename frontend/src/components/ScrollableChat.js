@@ -14,7 +14,7 @@ import { Modal, ModalOverlay, ModalContent, ModalBody, ModalFooter, Button } fro
 import socketIOClient from "socket.io-client";
 import axios from "axios";
 
-const ENDPOINT = "https://ilcha.onrender.com";
+const ENDPOINT = "https://ilchatu-a26s.onrender.com";
 
 const ScrollableChat = ({ messages, setLoading, selectedChat, setMessages }) => {
   const { user } = ChatState();
