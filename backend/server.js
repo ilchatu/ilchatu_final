@@ -96,7 +96,7 @@ const server = app.listen(
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "https://ilcha.onrender.com",
+    origin: "https://ilchatu-a26s.onrender.com",
   },
 });
 
