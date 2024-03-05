@@ -11,6 +11,7 @@
   border-radius: 3%;
   position: fixed;
   transition: margin-left 0.5s; /* Added transition for smooth animation */
+  overflow-x: auto;
 }
 
 /* Style the table */
