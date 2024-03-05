@@ -59,6 +59,24 @@ app.get("/api/users", async (req, res) => {
   }
 });
 
+// Route to delete a user
+app.delete("/api/users/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 // --------------------------deployment------------------------------
 
 const __dirname2= path.resolve(__dirname, '..');
