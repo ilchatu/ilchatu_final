@@ -316,6 +316,10 @@
 
     const [showPasswordInfo, setShowPasswordInfo] = useState(false);
 
+    const handleTooltipClick = () => {
+      setShowPasswordInfo(!showPasswordInfo);
+    };
+
     return (
       <VStack spacing="5px">
         <div class="container-auth" id="container-auth">
@@ -368,9 +372,20 @@
                     </Button>
                   </InputRightElement>
                   {/* Use Tooltip component to display the message */}
-                  <Tooltip label="Password must contain at least one uppercase letter, one lowercase letter, one symbol, one digit, and be at least 8 characters long." aria-label="password-requirements">
-                    <InputLeftElement cursor="pointer">
-                      <Box as={InfoOutlineIcon} color="gray.500" marginRight = "25" marginTop="4" width="10px" height="13px" />
+                  <Tooltip
+                    label="Password must contain at least one uppercase letter, one lowercase letter, one symbol, one digit, and be at least 8 characters long."
+                    aria-label="password-requirements"
+                    isOpen={showPasswordInfo} // Add isOpen prop to control visibility
+                  >
+                    <InputLeftElement cursor="pointer" onClick={handleTooltipClick}>
+                      <Box
+                        as={InfoOutlineIcon}
+                        color="gray.500"
+                        marginRight="25"
+                        marginTop="4"
+                        width="10px"
+                        height="13px"
+                      />
                     </InputLeftElement>
                   </Tooltip>
                 </InputGroup>
