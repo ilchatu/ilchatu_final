@@ -5,7 +5,7 @@ const userSchema = mongoose.Schema(
   {
     name: { type: "String", required: true },
     email: { type: "String", required: true, unique: true },
-    // studentnumber: { type: "String", required: true, unique: true }, //To implement one email, one user
+    studentnumber: { type: "String", required: true, unique: true }, //To implement one email, one user
     password: { type: "String", required: true },
     pic: {
       type: "String",
@@ -17,6 +17,9 @@ const userSchema = mongoose.Schema(
     address: {type: String, default: ""},
     occupation: {type: String, default: ""},
     Bio : {type: String, default: ""},
+    selectedProgram:{type: String},
+    selectedYear:{type: Number},
+    alumniID:{type: String},
     isAdmin: {
       type: Boolean,
       required: true,
