@@ -7,12 +7,72 @@ const bcrypt = require("bcryptjs");
 
 const registerUser = asyncHandler(async (req, res) => {
   console.log("r", req.body);
-  const { name, email, /*studentnumber,*/ password, pic } = req.body;
+  const { name, email, studentnumber, password, pic, selectedYear, selectedProgram } = req.body;
 
-  if (!name || !email || /*!studentnumber ||*/ !password) {
+  if (!name || !email || !studentnumber || !password || !selectedYear || !selectedProgram) {
     res.status(400);
     throw new Error("Please enter all the Fields");
   }
+  let alumniCode;
+  switch (req.body.selectedProgram) {
+    case 'Bachelor of Arts in Communication':
+      alumniCode = '01';
+      break;
+    case 'Bachelor of Science and Bachelor of Arts in Psychology':
+      alumniCode = '02';
+      break;
+    case 'Diploma in Midwifery':
+      alumniCode ='03';
+      break;
+    case 'Bachelor of Science in Entrepreneurship':
+      alumniCode = '04';
+      break;
+    case 'Bachelor of Science in Tourism Management':
+      alumniCode ='05';
+      break;
+    case 'Bachelor of Science in Accountancy':
+      alumniCode ='06';
+      break;
+    case 'Bachelor of Science in Accounting Information System':
+      alumniCode ='07';
+      break;
+    case 'Bachelor of Science in Information Technology':
+      alumniCode ='08';
+      break;
+    case 'Bachelor of Science in Computer Science':
+      alumniCode ='09';
+      break;
+    case 'Bachelor of Science in Mechanical Engineering':
+      alumniCode ='10';
+      break;
+    case 'Bachelor of Secondary Education Major in English':
+      alumniCode ='11';
+      break;
+    case 'Bachelor of Secondary Education Major in Mathematics':
+      alumniCode ='12';
+      break;
+    case 'Bachelor of Secondary Education Major in Science':
+      alumniCode ='13';
+      break;
+    case 'Bachelor of Elementary Education':
+      alumniCode ='14';
+      break;
+    
+    // Add more cases for other programs as needed
+
+    default:
+      alumniCode = '00'; // Default code if program is not recognized
+      break;
+  }
+
+  // Use the last 2 digits of the selected year
+  const lastTwoDigitsOfYear = req.body.selectedYear.toString().slice(-2);
+
+  // Use the last 4 digits of the student number
+  const lastFourDigitsOfStudentNumber = req.body.studentnumber.toString().slice(-4);
+
+  // Combine the parts to form the alumni ID
+  const alumniID = `${lastTwoDigitsOfYear}${alumniCode}${'-'}${lastFourDigitsOfStudentNumber}`;
 
   const userExists = await User.findOne({ email }); //To implement one email, one user
 
@@ -25,9 +85,12 @@ const registerUser = asyncHandler(async (req, res) => {
   const user = await User.create({
     name,
     email,
-    // studentnumber,
+    studentnumber,
     password: encryptedPassword,
     pic,
+    selectedYear,
+    selectedProgram,
+    alumniID,
     isVerified: false,
     verificationToken,
   });
@@ -49,7 +112,6 @@ const registerUser = asyncHandler(async (req, res) => {
       to: email,
       subject: "Email Verification",
       text: `Welcome to iLchatU! Click the following link to verify your email: https://ilchatu-a26s.onrender.com/api/auth/verify/${verificationToken}/${user.id}`,
-      //   text: `Welcome to iLchatU! Click the following link to verify your email: https://i-l-chatu.onrender.com/api/auth/verify/${verificationToken}/${user.id}`,
     };
     console.log("1212");
     transporter.sendMail(mailOptions, (error, info) => {
@@ -71,7 +133,10 @@ const registerUser = asyncHandler(async (req, res) => {
           _id: user._id,
           name: user.name,
           email: user.email,
-          // studentnumber: user.studentnumber,
+          studentnumber: user.studentnumber,
+          selectedProgram: user.selectedProgram,
+          selectedYear: user.selectedYear,
+          alumniID: user.alumniID, 
           pic: user.pic,
           token: generateToken(user._id),
           verificationToken: user.verificationToken,
@@ -106,6 +171,9 @@ const authUser = asyncHandler(async (req, res) => {
       address: user.address,
       occupation: user.occupation,
       Bio: user.Bio,
+      alumniID: user.alumniID,
+      selectedYear: user.selectedYear,
+      selectedProgram: user.selectedProgram,
       token: generateToken(user._id),
       isAdmin: user.isAdmin,
     });
@@ -128,24 +196,15 @@ const allUsers = asyncHandler(async (req, res) => {
   const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
   res.send(users);
 });
-const updateUserProfile = asyncHandler(async (req, res) => 
 
-{
-  const { 
-    UserId,
-    pic, 
-    name, 
-    mobileNumber,
-    address,
-    occupation,
-    Bio } = req.body;
+const updateUserProfile = asyncHandler(async (req, res) => {
+  const { UserId, pic, name, mobileNumber, address, occupation, Bio } = req.body;
 
   if (!pic) {
     res.status(400);
     throw new Error("Please provide a profile picture");
   }
   console.log('Received pic:', pic);
-
 
   try {
     const user = await User.findById(UserId);
@@ -154,7 +213,6 @@ const updateUserProfile = asyncHandler(async (req, res) =>
       res.status(404);
       throw new Error("User not found");
     }
-
 
     user.name = name;
     user.mobileNumber = mobileNumber;
@@ -176,6 +234,7 @@ const updateUserProfile = asyncHandler(async (req, res) =>
       address: user.address,
       occupation: user.occupation,
       Bio: user.Bio,
+      studentnumber: user.studentnumber,
       token: generateToken(user._id),
     });
   } catch (error) {
@@ -183,6 +242,5 @@ const updateUserProfile = asyncHandler(async (req, res) =>
     res.status(500).send({ message: "Internal Server Error" });
   }
 });
-
 
 module.exports = { registerUser, authUser, allUsers, updateUserProfile };
