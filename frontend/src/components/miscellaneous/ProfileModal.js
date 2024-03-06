@@ -100,6 +100,27 @@ const ProfileModal = ({ user, children }) => {
               fontSize={{ base: "15px", md: "22px" }}
               fontFamily="'Montserrat', sans-serif"
               opacity="0.8">
+              <span style={{ fontWeight: "bold" , color: "rgb(12, 91, 9)"}}>AId:</span> {user.alumniID}
+            </Text>
+
+            <Text 
+              fontSize={{ base: "15px", md: "22px" }}
+              fontFamily="'Montserrat', sans-serif"
+              opacity="0.8">
+              <span style={{ fontWeight: "bold" , color: "rgb(12, 91, 9)"}}>Program:</span> {user.selectedProgram}
+            </Text>
+
+            <Text 
+              fontSize={{ base: "15px", md: "22px" }}
+              fontFamily="'Montserrat', sans-serif"
+              opacity="0.8">
+              <span style={{ fontWeight: "bold" , color: "rgb(12, 91, 9)"}}>Year:</span> {user.selectedYear}
+            </Text>
+
+            <Text 
+              fontSize={{ base: "15px", md: "22px" }}
+              fontFamily="'Montserrat', sans-serif"
+              opacity="0.8">
               <span style={{ fontWeight: "bold", color: "rgb(12, 91, 9)" }}>Bio:</span> {user.Bio}
             </Text>
           
