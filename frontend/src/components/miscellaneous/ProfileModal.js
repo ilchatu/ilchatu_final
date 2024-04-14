@@ -66,62 +66,108 @@ const ProfileModal = ({ user, children }) => {
             />
             </div>
           
+
             <Text 
-              marginTop={ "10px"}
+              marginTop="10px"
               fontSize={{ base: "15px", md: "22px" }}
               fontFamily="'Montserrat', sans-serif"
               opacity="0.8">
-              <span style={{ fontWeight: "bold" , color: "rgb(12, 91, 9)"}}>Email:</span> {user.email}
+              <span style={{ fontWeight: "bold", color: "rgb(12, 91, 9)" }}>
+                {user.email.endsWith('.com') ? `Email: ${user.email}` : ""}
+              </span>
             </Text>
+
 
             <Text
-              className="LeftAlignText"
+            className="LeftAlignText"
+            fontSize={{ base: "15px", md: "22px" }}
+            fontFamily="'Montserrat', sans-serif"
+            opacity="0.8">
+            {user.address ? (
+              <>
+                <span style={{ fontWeight: "bold", color: "rgb(12, 91, 9)" }}>
+                  Address:
+                </span> {user.address}
+              </>
+            ) : ""}
+          </Text>
+
+
+            
+            <Text 
               fontSize={{ base: "15px", md: "22px" }}
               fontFamily="'Montserrat', sans-serif"
               opacity="0.8">
-              <span style={{ fontWeight: "bold", color: "rgb(12, 91, 9)" }}>Address:</span> {user.address}
+                {user.mobileNumber? (
+                  <>
+                  <span style={{ fontWeight: "bold", color: "rgb(12, 91, 9)" }}>
+                    Mobile Number:</span> {user.mobileNumber}
+                  </>
+                ):""}
+             
             </Text>
             
             <Text 
               fontSize={{ base: "15px", md: "22px" }}
               fontFamily="'Montserrat', sans-serif"
               opacity="0.8">
-             <span style={{ fontWeight: "bold", color: "rgb(12, 91, 9)" }}>Mobile Number:</span> {user.mobileNumber}
-            </Text>
-            
-            <Text 
-              fontSize={{ base: "15px", md: "22px" }}
-              fontFamily="'Montserrat', sans-serif"
-              opacity="0.8">
-              <span style={{ fontWeight: "bold", color: "rgb(12, 91, 9)" }}>Occupation:</span> {user.occupation}
+                {user.occupation? (
+                  <>
+                  <span style={{ fontWeight: "bold", color: "rgb(12, 91, 9)" }}>
+                    Occupation:</span> {user.occupation}
+                  </>
+                ):""}
             </Text>
 
             <Text 
               fontSize={{ base: "15px", md: "22px" }}
               fontFamily="'Montserrat', sans-serif"
               opacity="0.8">
-              <span style={{ fontWeight: "bold" , color: "rgb(12, 91, 9)"}}>AId:</span> {user.alumniID}
+                {user.alumniID? (
+                <>
+                <span style={{ fontWeight: "bold" , color: "rgb(12, 91, 9)"}}>
+                  AId:</span> {user.alumniID}
+                </>
+              ):""}
+              
             </Text>
 
             <Text 
               fontSize={{ base: "15px", md: "22px" }}
               fontFamily="'Montserrat', sans-serif"
               opacity="0.8">
-              <span style={{ fontWeight: "bold" , color: "rgb(12, 91, 9)"}}>Program:</span> {user.selectedProgram}
+                {user.selectedProgram?(
+                <>
+                <span style={{ fontWeight: "bold" , color: "rgb(12, 91, 9)"}}>
+                  Program:</span> {user.selectedProgram}
+                </>
+                ):""}
             </Text>
+            {/*
+            <Text 
+              fontSize={{ base: "15px", md: "22px" }}
+              fontFamily="'Montserrat', sans-serif"
+              opacity="0.8">
+                {user.selectedYear?(
+                  <>
+                  <span style={{ fontWeight: "bold" , color: "rgb(12, 91, 9)"}}>
+                    Year:</span> {user.selectedYear}
+                  </>
+                ):""}
+            </Text>
+              */}
 
             <Text 
               fontSize={{ base: "15px", md: "22px" }}
               fontFamily="'Montserrat', sans-serif"
               opacity="0.8">
-              <span style={{ fontWeight: "bold" , color: "rgb(12, 91, 9)"}}>Year:</span> {user.selectedYear}
-            </Text>
-
-            <Text 
-              fontSize={{ base: "15px", md: "22px" }}
-              fontFamily="'Montserrat', sans-serif"
-              opacity="0.8">
-              <span style={{ fontWeight: "bold", color: "rgb(12, 91, 9)" }}>Bio:</span> {user.Bio}
+                {user.Bio?(
+                  <>
+                  <span style={{ fontWeight: "bold", color: "rgb(12, 91, 9)" }}>
+                    Bio:</span> {user.Bio}
+                  </>
+                ):""}
+              
             </Text>
           
           </ModalBody>
