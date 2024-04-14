@@ -81,3 +81,48 @@
       margin-top: 5%;
   }
 }
+
+/* Button Group Style */
+.buttonGroup {
+  display: flex; /* Make the buttons display horizontally */
+}
+
+/* Delete Button Style */
+.deleteButton {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 4px 8px; /* Adjusted padding for smaller size */
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-right: 6px;
+}
+
+.deleteButton:hover {
+  background-color: darkred;
+}
+
+/* Set Admin Button Style */
+.adminButton {
+  background-color: green;
+  color: white;
+  border: none;
+  padding: 4px 8px; /* Adjusted padding for smaller size */
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.adminButton:hover {
+  background-color: darkgreen;
+}
+
+.removeAdminButton {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 4px 8px; /* Adjusted padding for smaller size */
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 8px;
