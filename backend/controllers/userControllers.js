@@ -114,7 +114,7 @@ const registerUser = asyncHandler(async (req, res) => {
       from: "ilchatu2023@gmail.com",
       to: email,
       subject: "Email Verification",
-      text: `Welcome to iLchatU! Click the following link to verify your email: https://ilchatu-a26s.onrender.com/api/auth/verify/${verificationToken}/${user.id}`,
+      text: `Welcome to iLchatU! Click the following link to verify your email: https://ilchatu.com/api/auth/verify/${verificationToken}/${user.id}`,
     };
     console.log("1212");
     transporter.sendMail(mailOptions, (error, info) => {
