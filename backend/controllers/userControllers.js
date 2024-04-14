@@ -18,8 +18,11 @@ const registerUser = asyncHandler(async (req, res) => {
     case 'Bachelor of Arts in Communication':
       alumniCode = '01';
       break;
-    case 'Bachelor of Science and Bachelor of Arts in Psychology':
+    case 'Bachelor of Science in Psychology':
       alumniCode = '02';
+      break;
+    case 'Bachelor of Arts in Psychology':
+      alumniCode = '15';
       break;
     case 'Diploma in Midwifery':
       alumniCode ='03';
@@ -155,11 +158,17 @@ const authUser = asyncHandler(async (req, res) => {
   console.log(req.body);
   const user = await User.findOne({ email /*studentnumber*/ });
   console.log(user);
-  var IsVerified = user.isVerified;
+
+  if (!user) {
+    res.status(401);
+    throw new Error("User not found"); // Return a specific error message if user not found
+  }
+
+  const IsVerified = user.isVerified; // Move this line inside the if block to ensure user exists
   console.log(user);
   console.log(await user.matchPassword(password));
 
-  if (user && IsVerified && (await user.matchPassword(password))) {
+  if (IsVerified && (await user.matchPassword(password))) {
     console.log(generateToken(user._id));
     res.json({
       _id: user._id,
@@ -182,6 +191,7 @@ const authUser = asyncHandler(async (req, res) => {
     throw new Error("Please check your credentials or Verify your Account");
   }
 });
+
 
 const allUsers = asyncHandler(async (req, res) => {
   const keyword = req.query.search
@@ -220,6 +230,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     user.occupation = occupation;
     user.Bio = Bio;
     user.pic = pic;
+    
 
     // Save the updated user
     await user.save();
@@ -236,6 +247,9 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       Bio: user.Bio,
       studentnumber: user.studentnumber,
       token: generateToken(user._id),
+      alumniID: user.alumniID,
+      selectedYear: user.selectedYear,
+      selectedProgram: user.selectedProgram,
     });
   } catch (error) {
     console.error(error);
@@ -243,4 +257,52 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { registerUser, authUser, allUsers, updateUserProfile };
+
+const handleSoftDelete = asyncHandler(async (req, res) => {
+  const { userId, deleteUUID } = req.body; // Extract userId from request body
+
+  console.log("User ID being passed for soft deletion:", userId);
+
+  try {
+    const user = await User.findById(userId);
+
+
+    // Soft delete user data
+    user.name = "Deleted User";
+    user.email = deleteUUID;
+    user.studentnumber = deleteUUID;
+    user.pic = "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg";
+    user.mobileNumber = "";
+    user.address = "";
+    user.occupation = "";
+    user.Bio = "";
+    user.selectedProgram = "";
+    user.selectedYear ="";
+    user.alumniID = "";
+
+
+    // Other soft deletion logic...
+
+    // Save the updated user
+    await user.save();
+
+    // Respond with success message
+    res.json({
+      success: true,
+      message: "User data updated (soft deletion)",
+      deletedUser: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        // Include additional fields if needed
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+
+
+module.exports = { registerUser, authUser, allUsers, updateUserProfile, handleSoftDelete};
