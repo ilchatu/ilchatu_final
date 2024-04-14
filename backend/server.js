@@ -36,9 +36,20 @@ app.use("/api/report", reportRoute);
 // for collection count using mongoose //
 app.get("/api/count/:collectionName", async (req, res) => {
   const { collectionName } = req.params;
+  let filter = {};
+
+  // Add a filter to exclude documents with empty or null alumniID fields for the 'users' collection
+  if (collectionName === 'users') {
+    filter = { 
+      $or: [
+        { alumniID: { $ne: "" } }, // Exclude documents where alumniID is an empty string
+        { alumniID: { $exists: false } } // Exclude documents where alumniID does not exist
+      ]
+    };
+  }
 
   try {
-    const count = await mongoose.connection.db.collection(collectionName).countDocuments();
+    const count = await mongoose.connection.db.collection(collectionName).countDocuments(filter);
     res.json({ count });
   } catch (error) {
     console.error(error);
@@ -46,11 +57,12 @@ app.get("/api/count/:collectionName", async (req, res) => {
   }
 });
 
+
 //for fetching users//
 app.get("/api/users", async (req, res) => {
   try {
-    // Fetch users from your database
-    const users = await User.find(); // Assuming you have a User model with a `find` method
+    // Fetch users from your database excluding those with the name "Deleted user"
+    const users = await User.find({ name: { $ne: "Deleted User" } }); // Exclude users with name "Deleted user"
 
     res.json(users);
   } catch (error) {
@@ -71,6 +83,61 @@ app.delete("/api/users/:userId", async (req, res) => {
     }
 
     res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+// Route to set admin status for a user
+app.put("/api/users/:userId/set-admin", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    // If user not found, return error
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Set isAdmin field to true
+    user.isAdmin = true;
+
+    // Save the updated user
+    await user.save();
+
+    // Return success message
+    res.json({ message: "Admin status set successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Route to remove admin status for a user
+app.put("/api/users/:userId/remove-admin", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    // If user not found, return error
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Set isAdmin field to false
+    user.isAdmin = false;
+
+    // Save the updated user
+    await user.save();
+
+    // Return success message
+    res.json({ message: "Admin status removed successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
