@@ -7,6 +7,8 @@ import { useToast } from "@chakra-ui/toast";
 import { FormControl, Tooltip } from "@chakra-ui/react"; // Import Tooltip
 import { Input } from "@chakra-ui/input";
 import axios from "axios";
+import { v4 as uuidv4 } from 'uuid';
+import {AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay} from '@chakra-ui/react';
 import {
   Modal,
   ModalBody,
@@ -23,14 +25,73 @@ const EditProfile = ({ user, children }) => {
   const [confirmOpen, setConfirmOpen] = useState(false); // State for confirmation modal
   const [picLoading, setPicLoading] = useState(false);
   const toast = useToast();
-  const [name, setName] = useState();
-  const [mobileNumber, setMobileNumber] = useState();
-  const [address, setAddress] = useState();
-  const [occupation, setOccupation] = useState();
-  const [Bio, setBio] = useState();
+  const [name, setName] = useState(user.name|| '');
+  const [mobileNumber, setMobileNumber] = useState(user.mobileNumber||'');
+  const [address, setAddress] = useState(user.address||'');
+  const [occupation, setOccupation] = useState(user.occupation||'');
+  const [Bio, setBio] = useState(user.Bio||'');
   const [agree, setAgree] = useState(false); // State for checkbox
+  const [userIdToDelete, setUserIdToDelete] = useState(null);
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
+  function isValidName(name) {
+    const validPattern = /^[a-zA-Z]+(\s[a-zA-Z]+)*$/; // Allows alphabetic characters and spaces in between words
+    return validPattern.test(name) && name !== "Deleted User";
+}
+function isValidMobileNumber(mobileNumber) {
+  const pattern = /^\+?(\d+)$/;
+  if (!pattern.test(mobileNumber)) {
+      return false; // Check if the mobile number is digits only (with optional leading +)
+  }
+
+  if (mobileNumber.startsWith('09')) {
+      return mobileNumber.length === 11; // If starts with '09', must be 11 digits
+  } else if (mobileNumber.startsWith('+639')) {
+      return mobileNumber.length === 13; // If starts with '+63', must be 13 digits
+  } else {
+      return false; // If starts with neither, it's invalid
+  }
+}
+
 
   const submitHandler = async () => {
+    
+    if (!isValidName(name)) {
+      toast({
+        title: "Invalid Name",
+        description: "Please enter a valid Full Name (alphabet characters only, spaces allowed between words).",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+
+     if (!isValidName(name)) {
+        toast({
+            title: "Invalid Input",
+            description: "Please check your name",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+        });
+        return; // Prevent form submission if validation fails
+    }
+    if (!isValidMobileNumber(mobileNumber)) {
+      toast({
+          title: "Invalid Input",
+          description: "Please check your mobile number.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+      });
+      return; // Prevent form submission if validation fails
+  }
+
     if (!agree) {
       toast({
         title: "Please agree to the terms",
@@ -54,27 +115,22 @@ const EditProfile = ({ user, children }) => {
       // Initialize a complete payload with all possible fields
       const payload = {
         UserId: user._id,
-        pic: user.pic,
-        name: user.name,
-        mobileNumber: user.mobileNumber,
-        address: user.address,
-        occupation: user.occupation,
-        Bio: user.Bio,
+        pic: user.pic, // Assuming you want to keep the picture unchanged if not specified
       };
-
-      // Update the payload with changed fields
-      if (name) payload.name = name;
-      if (mobileNumber) payload.mobileNumber = mobileNumber;
-      if (address) payload.address = address;
-      if (occupation) payload.occupation = occupation;
-      if (Bio) payload.Bio = Bio;
-
+    
+      // Explicitly check for 'undefined' to allow empty strings as valid values
+      if (typeof name !== 'undefined') payload.name = name;
+      if (typeof mobileNumber !== 'undefined') payload.mobileNumber = mobileNumber;
+      if (typeof address !== 'undefined') payload.address = address;
+      if (typeof occupation !== 'undefined') payload.occupation = occupation;
+      if (typeof Bio !== 'undefined') payload.Bio = Bio;
+    
       const response = await axios.post(
         "/api/user/update-profile",
         payload,
         config
       );
-
+    
       const data = response.data;
 
       localStorage.setItem("userInfo", JSON.stringify(data));
@@ -93,6 +149,43 @@ const EditProfile = ({ user, children }) => {
     }
   };
 
+  const handleSoftDelete = async (userId) => {
+    const deleteUUID=uuidv4();
+     const config = {
+     headers: {
+       "Content-type": "application/json",
+     },
+   };
+   
+   try {
+ 
+       const response = await axios.post(
+         "/api/user/softdelete", 
+         { userId,
+           deleteUUID
+          },
+         config
+       );
+     
+       if (response.status === 200) {
+         console.log('Soft deletion successful, UUID:', deleteUUID);
+         // Handle successful response (if needed)
+         console.log('Soft deletion successful');
+         localStorage.removeItem("userInfo");
+         window.location.reload();
+   
+       } else {
+         // Handle unsuccessful response
+         console.error('Soft deletion failed:', response.statusText);
+         // You can display an error message to the user or handle the error in another way
+       }
+     } catch (error) {
+       // Handle network errors or other exceptions
+       console.error('Error soft deleting user:', error);
+     }
+   };
+  
+
   const confirmationMessage = () => {
     let message = "Are you sure you want to update your profile?";
     if (address && mobileNumber) {
@@ -106,6 +199,15 @@ const EditProfile = ({ user, children }) => {
         "<br/>By editing your profile, you Agree to share the following information:<br/><br/><span style='color:green;'>&#10003;</span> Mobile Number";
     }
     return <div dangerouslySetInnerHTML={{ __html: message }} />;
+  };
+
+  const openConfirmationModal = (userId) => {
+    setUserIdToDelete(userId);
+    setShowConfirmation(true);
+  };
+
+  const closeConfirmationModal = () => {
+    setShowConfirmation(false);
   };
   
 
@@ -151,6 +253,7 @@ const EditProfile = ({ user, children }) => {
               <FormControl id="first-name" bg="#eee">
                 <Input
                   placeholder="Full Name"
+                  value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
               </FormControl>
@@ -166,6 +269,7 @@ const EditProfile = ({ user, children }) => {
               >
                 <Input
                   placeholder="Mobile Number"
+                  value={mobileNumber}
                   onChange={(e) => setMobileNumber(e.target.value)}
                 />
               </FormControl>
@@ -178,25 +282,26 @@ const EditProfile = ({ user, children }) => {
             >
               <Input
                 placeholder="Occupation"
+                value={occupation}
                 onChange={(e) => setOccupation(e.target.value)}
               />
             </FormControl>
 
-            <Tooltip
-              label="Only fill this field if you're willing to share your information"
-              placement="top"
-            >
-            <FormControl id="Address" style={{ marginTop: 15 }} bg="#eee">
-              <Input
-                placeholder="Address"
-                onChange={(e) => setAddress(e.target.value)}
-              />
-            </FormControl>
+            <Tooltip label="Only fill this field if you're willing to share your information" placement="top">
+              <FormControl id="Address" style={{ marginTop: 15 }} bg="#eee">
+                <Input
+                  placeholder="Address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />       
+              </FormControl>
             </Tooltip>
+
 
             <FormControl id="Bio" style={{ marginTop: 15 }} bg="#eee">
               <Input
                 placeholder="Bio"
+                value={Bio}
                 onChange={(e) => setBio(e.target.value)}
               />
             </FormControl>
@@ -210,6 +315,14 @@ const EditProfile = ({ user, children }) => {
             >
               Update
             </Button>
+
+            <Button 
+            colorScheme="red"
+            width="100%"
+            style={{ marginTop: 15 }}
+            onClick={() => openConfirmationModal(user._id)}>
+              Delete Account
+              </Button>
 
             {/* Confirmation Modal */}
             <Modal
@@ -241,6 +354,8 @@ const EditProfile = ({ user, children }) => {
                   >
                     Confirm
                   </Button>
+
+                 
                 </ModalFooter>
               </ModalContent>
             </Modal>
@@ -249,7 +364,48 @@ const EditProfile = ({ user, children }) => {
           <ModalFooter justifyContent="center"></ModalFooter>
         </ModalContent>
       </Modal>
+      <AlertDialog
+        isOpen={showConfirmation}
+        leastDestructiveRef={undefined}
+        onClose={closeConfirmationModal}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Confirm Deletion
+            </AlertDialogHeader>
+            <AlertDialogBody>
+              Are you sure you want to delete this user?
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button onClick={() => handleSoftDelete(userIdToDelete)} colorScheme="red" ml={3}>
+                Yes
+              </Button>
+              <Button onClick={closeConfirmationModal} ml={3}>
+                No
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+      <AlertDialog
+        isOpen={isSuccessOpen}
+        leastDestructiveRef={undefined}
+        onClose={() => setIsSuccessOpen(false)}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Success
+            </AlertDialogHeader>
+            <AlertDialogBody>
+              User deleted successfully!
+            </AlertDialogBody>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </>
+    
   );
 };
 
