@@ -20,7 +20,7 @@ const Users = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/users');
+        const response = await fetch('https://ilchatu.com/api/users');
         const data = await response.json();
         setUsers(data);
       } catch (error) {
@@ -72,7 +72,7 @@ const Users = () => {
    
   const handleSetAdmin = async () => {
     try {
-      await fetch(`http://localhost:5000/api/users/${userIdToSetAdmin}/set-admin`, {
+      await fetch(`https://ilchatu.com/api/users/${userIdToSetAdmin}/set-admin`, {
         method: 'PUT',
       });
       console.log('Admin status set successfully');
@@ -94,7 +94,7 @@ const Users = () => {
   
   const handleRemoveAdmin = async () => {
     try {
-      await fetch(`http://localhost:5000/api/users/${userIdToRemoveAdmin}/remove-admin`, {
+      await fetch(`https://ilchatu.com/api/users/${userIdToRemoveAdmin}/remove-admin`, {
         method: 'PUT',
       });
       console.log('Admin status removed successfully');
