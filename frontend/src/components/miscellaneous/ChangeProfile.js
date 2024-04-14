@@ -1,102 +1,49 @@
-//ChangeProfile.js
-import { useDisclosure } from "@chakra-ui/hooks";
-import { ChatIcon } from "@chakra-ui/icons";
-import { Button, IconButton } from "@chakra-ui/button";
-import { useToast } from "@chakra-ui/toast";
-import { FormControl, FormLabel } from "@chakra-ui/form-control";
-import { Input } from "@chakra-ui/input";
-import axios from "axios";
-import { useState, useEffect } from "react";
-//import './styles2.css';
+import React, { useState } from 'react';
 import {
-  Image,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from "@chakra-ui/react";
-import React from "react";
+  useDisclosure, useToast, Button, IconButton, Modal, ModalBody,
+  ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Image, Flex, Stack
+} from '@chakra-ui/react';
+import { ChatIcon } from "@chakra-ui/icons";
+import axios from 'axios';
 
-const ChangeProfile = ({ user, children}) => {
+function ChangeProfile({ user, children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
-  const [pic, setPic] = useState();
+  const [pic, setPic] = useState(user.pic);  // User's current profile picture
+  const [newPic, setNewPic] = useState(null);  // New profile picture (temporary)
   const [picLoading, setPicLoading] = useState(false);
-  const [forceRender, setForceRender] = useState(0); 
 
-  useEffect(() => {
-    // This effect will be triggered whenever the user changes
-    // Update the forceRender to force a re-render
-    setForceRender((prev) => prev + 1);
-  }, [user]);
-
-  const submitHandler = async () => {
+  // Function to update profile picture
+  const updateProfilePic = async () => {
+    // Configuration for axios request
     const config = {
       headers: {
-        "Content-type": "application/json",
+        "Content-Type": "application/json",
         Authorization: `Bearer ${user.token}`,
       },
     };
 
-    console.log("Submitting form...");
     try {
-      const response = await axios.post(
-        "/api/user/update-profile",
-        {
-          UserId: user._id,
-          pic,
-          name: user.name,
-          mobileNumber: user.mobileNumber,
-          address: user.address,
-          occupation: user.occupation,
-          Bio: user.Bio,
-        },
-        config
-      );
+      const { data } = await axios.post("/api/user/update-profile", {
+        UserId: user._id,
+        pic: newPic || pic, // Use newPic if available, otherwise use current pic
+        name: user.name,
+      }, config);
 
-      const data = response.data;
-
-      if (!data) {
-        console.error(
-          "Error updating profile picture: Response data is undefined"
-        );
-        toast({
-          title: "Failed to update profile picture",
-          status: "error",
-          description: "Unexpected response from the server",
-          duration: 5000,
-          isClosable: true,
-          position: "bottom",
-        });
-        return;
-      }
-      
       localStorage.setItem('userInfo', JSON.stringify(data));
-      console.log("Response:", data);
-
-      console.log("Updated pic:", pic);
-
-      setForceRender((prev) => prev + 1);
-
       toast({
-        title: "Profile Picture Updated",
+        title: "Profile Updated Successfully",
         status: "success",
         duration: 5000,
         isClosable: true,
         position: "bottom",
       });
-
-      // Trigger re-render in the parent component (ProfileModal)
-      window.location.reload();
+      window.location.reload(); // Reload the window to reflect changes
     } catch (error) {
-      console.error("Error updating profile picture:", error);
       toast({
-        title: "Failed to update profile picture",
+        title: "Profile Update Failed",
         status: "error",
-        description: error.message || "Unknown error",
+        description: error.response?.data?.message || error.message,
         duration: 5000,
         isClosable: true,
         position: "bottom",
@@ -104,101 +51,110 @@ const ChangeProfile = ({ user, children}) => {
     }
   };
 
-  const postDetails = (pics) => {
+  // Handling file change
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
     setPicLoading(true);
-    if (pics === undefined) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "ilchatu");
+    formData.append("cloud_name", "ilchatu");
+
+    try {
+      const response = await fetch("https://api.cloudinary.com/v1_1/ilchatu/image/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+      setNewPic(data.url); // Temporarily store the new picture
+    } catch (error) {
       toast({
-        title: "Please Select an Image!",
-        status: "warning",
+        title: "Image Upload Failed",
+        status: "error",
+        description: "Failed to upload image",
         duration: 5000,
         isClosable: true,
         position: "bottom",
       });
-      return;
-    }
-    console.log(pics);
-    if (pics.type === "image/jpeg" || pics.type === "image/png") {
-      const data = new FormData();
-      data.append("file", pics);
-      data.append("upload_preset", "ilchatu");
-      data.append("cloud_name", "ilchatu");
-      fetch("https://api.cloudinary.com/v1_1/ilchatu/image/upload", {
-        method: "post",
-        body: data,
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setPic(data.url.toString());
-          console.log(data.url.toString());
-          setPicLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          setPicLoading(false);
-        });
-    } else {
-      toast({
-        title: "Please Select an Image!",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
+    } finally {
       setPicLoading(false);
-      return;
+    }
+  };
+
+  // Handling modal close without saving changes
+  const handleCancel = () => {
+    setNewPic(null); // Discard the new picture
+    onClose();       // Close the modal
+  };
+
+  // Handling profile update
+  const handleUpdate = () => {
+    if (newPic) {
+      setPic(newPic); // Set newPic as the official profile picture
+      updateProfilePic();
+    } else {
+      onClose(); // Close modal if no new picture is chosen
+       toast({
+        title: "Image Upload Failed",
+        status: "error",
+        description: "No File Chosen",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
     }
   };
 
   return (
     <>
- {children ? (
-        <span onClick={onOpen}> {children} </span>
-      ) : (
-        <IconButton
-          display={{ base: "flex" }}
-          icon={<ChatIcon />}
-          onClick={onOpen}
-        />
-      )}
+    {children ? (
+      <span onClick={onOpen}>{children}</span>
+    ) : (
+      <IconButton
+        display={{ base: "flex" }}
+        icon={<ChatIcon />}
+        onClick={onOpen}
+      />
+    )}
+
       <Modal size="lg" isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
-        <ModalContent minW={{ base: "80%", md: "400px" }} maxW={{ base: "100%", md: "500px" }} h="" borderRadius="16px" boxShadow="0 5px 15px rgba(0, 0, 0, 0.3)">
-          <ModalHeader fontSize="30px" fontFamily="'Montserrat', sans-serif" display="flex" justifyContent="center" color= "rgb(12, 91, 9, 0.9)">
-            Change Profile Picture
-          </ModalHeader>
-
+        <ModalContent
+          minW={{ base: "80%", md: "400px" }}
+          maxW={{ base: "100%", md: "450px" }}
+          h=""
+          borderRadius="16px"
+          boxShadow="0 5px 15px rgba(0, 0, 0, 0.3)">
+          <ModalHeader fontSize="30px"
+            fontFamily="'Montserrat', sans-serif"
+            display="flex"
+            justifyContent="center"
+            color="rgb(12, 91, 9, 0.9)">
+              Change Profile Picture
+              </ModalHeader>
           <ModalCloseButton />
-          <ModalBody display="flex" flexDir="column" alignItems="center" justifyContent="space-between">
-            <Image borderRadius="full" boxSize="200px" src={user.pic} alt={user.name} />
-            <FormControl id="pic" style={{ marginTop: 20}}>
-              <Input
-                type="file"
-                p={1.5}
-                accept="image/*"
-                onChange={(e) => postDetails(e.target.files[0])}
-              />
-            </FormControl>
-
-            <Button
-              colorScheme="green"
-              width="100%"
-              style={{ marginTop: 15 }}
-              onClick={() => {
-                submitHandler();
-                onClose();
-              }}
-              isLoading={picLoading}
-            >
-              Update
-            </Button>
+          <ModalBody display="flex" flexDirection="column" alignItems="center" >
+            <Image borderRadius="full" boxSize="175px" src={newPic || pic} alt="Profile image" mb={4} />
+            <input 
+            type="file" 
+            style={{
+        padding: '6px', // equivalent to p={1.5} in some frameworks
+        border: '1px solid #ccc', // simple gray border
+        borderRadius: '5px', // rounded corners
+        cursor: picLoading ? 'wait' : 'pointer' // cursor changes based on loading state
+    }}
+             onChange={handleFileChange} disabled={picLoading} />
+            <Stack direction="row" spacing={4} mt={4} justifyContent="center">
+              <Button isLoading={picLoading} colorScheme="green" onClick={handleUpdate}>Update</Button>
+              <Button colorScheme="red" onClick={handleCancel}>Cancel</Button>
+            </Stack>
           </ModalBody>
-
-          <ModalFooter justifyContent="center">
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </>
   );
-};
+}
 
 export default ChangeProfile;
