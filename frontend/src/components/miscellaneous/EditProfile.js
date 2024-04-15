@@ -19,8 +19,10 @@ import {
   ModalOverlay,
   Checkbox,
 } from "@chakra-ui/react";
+import { useHistory } from "react-router-dom";
 
 const EditProfile = ({ user, children }) => {
+  const history = useHistory(); // Initialize history hook
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [confirmOpen, setConfirmOpen] = useState(false); // State for confirmation modal
   const [picLoading, setPicLoading] = useState(false);
@@ -149,42 +151,36 @@ function isValidMobileNumber(mobileNumber) {
     }
   };
 
-  const handleSoftDelete = async (userId) => {
-    const deleteUUID=uuidv4();
-     const config = {
-     headers: {
-       "Content-type": "application/json",
-     },
-   };
-   
-   try {
- 
-       const response = await axios.post(
-         "/api/user/softdelete", 
-         { userId,
-           deleteUUID
-          },
-         config
-       );
-     
-       if (response.status === 200) {
-         console.log('Soft deletion successful, UUID:', deleteUUID);
-         // Handle successful response (if needed)
-         console.log('Soft deletion successful');
-         localStorage.removeItem("userInfo");
-         window.location.reload();
-   
-       } else {
-         // Handle unsuccessful response
-         console.error('Soft deletion failed:', response.statusText);
-         // You can display an error message to the user or handle the error in another way
-       }
-     } catch (error) {
-       // Handle network errors or other exceptions
-       console.error('Error soft deleting user:', error);
-     }
-   };
-  
+  const handleSoftDelete = async (userId, history) => {
+    const deleteUUID = uuidv4();
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+
+    try {
+      const response = await axios.post(
+        "/api/user/softdelete",
+        { userId, deleteUUID },
+        config
+      );
+
+      if (response.status === 200) {
+        console.log('Soft deletion successful, UUID:', deleteUUID);
+        // Redirect to homepage after successful deletion
+        localStorage.removeItem("userInfo");
+        history.push("/");
+      } else {
+        // Handle unsuccessful response
+        console.error('Soft deletion failed:', response.statusText);
+        // You can display an error message to the user or handle the error in another way
+      }
+    } catch (error) {
+      // Handle network errors or other exceptions
+      console.error('Error soft deleting user:', error);
+    }
+  };
 
   const confirmationMessage = () => {
     let message = "Are you sure you want to update your profile?";
@@ -378,7 +374,7 @@ function isValidMobileNumber(mobileNumber) {
               Are you sure you want to delete this user?
             </AlertDialogBody>
             <AlertDialogFooter>
-              <Button onClick={() => handleSoftDelete(userIdToDelete)} colorScheme="red" ml={3}>
+              <Button onClick={() => handleSoftDelete(userIdToDelete, history)} colorScheme="red" ml={3}>
                 Yes
               </Button>
               <Button onClick={closeConfirmationModal} ml={3}>
