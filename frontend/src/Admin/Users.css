@@ -59,6 +59,20 @@
   align-items: center;
 }
 
+.user3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 17px;
+  color: rgb(8, 8, 8);
+  align-items: center;
+}
+
+.user4 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 17px;
+  color: rgb(8, 8, 8);
+  align-items: center;
+}
+
 /* Media queries for responsiveness */
 @media screen and (max-width: 1200px) and (min-width: 800px) {
   .user-list-container {
@@ -126,4 +140,32 @@
   border-radius: 15px;
   cursor: pointer;
   font-size: 8px;
+}
+
+/* Filter Container */
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+/* Filter Section */
+.filter-section {
+  margin-bottom: 20px;
+  flex: 1;
+}
+
+/* Filter Label */
+.filter-label {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  padding-left: 5px;
+}
+
+/* Filter Select */
+.filter-select {
+  width: 100%;
+  font-size: 14px;
 }
