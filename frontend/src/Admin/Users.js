@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button, Input } from '@chakra-ui/react';
+import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button, Input, Select } from '@chakra-ui/react';
 import './Users.css'; // Import the CSS file
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
@@ -7,6 +7,8 @@ import { v4 as uuidv4 } from 'uuid';
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedProgram, setSelectedProgram] = useState(''); // State to manage selected program
+  const [selectedYear, setSelectedYear] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState(null);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
@@ -20,7 +22,7 @@ const Users = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch('https://ilchatu.com/api/users');
+        const response = await fetch('http://localhost:5000/api/users');
         const data = await response.json();
         setUsers(data);
       } catch (error) {
@@ -31,9 +33,15 @@ const Users = () => {
     fetchUsers();
   }, []);
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredUsers = users.filter(user => {
+    const matchesSearchTerm = user.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesProgram = selectedProgram === '' || user.selectedProgram === selectedProgram;
+    const matchesYear = selectedYear === '' || user.selectedYear === parseInt(selectedYear); // Parse selectedYear as an integer
+  
+    return matchesSearchTerm && matchesProgram && matchesYear;
+  });
+  
+
 
   const handleSoftDelete = async (userId) => {
     const deleteUUID = uuidv4();
@@ -72,7 +80,7 @@ const Users = () => {
    
   const handleSetAdmin = async () => {
     try {
-      await fetch(`https://ilchatu.com/api/users/${userIdToSetAdmin}/set-admin`, {
+      await fetch(`http://localhost:5000/api/users/${userIdToSetAdmin}/set-admin`, {
         method: 'PUT',
       });
       console.log('Admin status set successfully');
@@ -94,7 +102,7 @@ const Users = () => {
   
   const handleRemoveAdmin = async () => {
     try {
-      await fetch(`https://ilchatu.com/api/users/${userIdToRemoveAdmin}/remove-admin`, {
+      await fetch(`http://localhost:5000/api/users/${userIdToRemoveAdmin}/remove-admin`, {
         method: 'PUT',
       });
       console.log('Admin status removed successfully');
@@ -138,7 +146,7 @@ const Users = () => {
     <div className="user-list-container" style={{ overflowY: 'auto'}}>
       <h2>iLchatUsers</h2>
       <div className="search-container" style={{ textAlign: "center"}}>
-        <label htmlFor="search" className='user1'>Search:</label>
+        <label htmlFor="search" className='user1'>Search</label>
         <Input
           type="text"
           id="search"
@@ -147,11 +155,57 @@ const Users = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
+
+<div className="filter-container">
+  <div className="filter-section">
+    <label htmlFor="program" className="filter-label">Filter by Program:</label>
+    <Select
+      id="program"
+      className="filter-select"
+      value={selectedProgram}
+      onChange={(e) => setSelectedProgram(e.target.value)}
+    >
+      <option value="">All Programs</option>
+      {/* Populate options from user data or static list */}
+      {users
+        .map(user => user.selectedProgram)
+        .filter((value, index, self) => self.indexOf(value) === index)
+        .map((program, index) => (
+          <option key={index} value={program}>
+            {program}
+          </option>
+        ))}
+    </Select>
+  </div>
+  <div className="filter-section">
+    <label htmlFor="year" className="filter-label">Filter by Year:</label>
+    <Select
+      id="year"
+      className="filter-select"
+      value={selectedYear}
+      onChange={(e) => setSelectedYear(e.target.value)}
+    >
+      <option value="">All Years</option>
+      {/* Populate options from user data or static list */}
+      {users
+        .map(user => user.selectedYear)
+        .filter((value, index, self) => self.indexOf(value) === index)
+        .map((year, index) => (
+          <option key={index} value={year}>
+            {year}
+          </option>
+        ))}
+    </Select>
+  </div>
+</div>
+
       <table className="user-table">
         <thead>
           <tr>
             <th style={{ textAlign: "center", color: "green" }}>Name</th>
             <th style={{ textAlign: "center", color: "green"}}>Email</th>
+            <th style={{ textAlign: "center", color: "green"}}>Program</th>
+            <th style={{ textAlign: "center", color: "green"}}>Year Graduated</th>
             <th style={{ textAlign: "center", color: "green"}}>Actions</th>
           </tr>
         </thead>
@@ -160,7 +214,9 @@ const Users = () => {
             <tr key={user._id}>
               <td className='user1'>{user.name}</td>
               <td className='user2'>{user.email}</td>
-              <td className='user3'>
+              <td className='user3'>{user.selectedProgram}</td>
+              <td className='user4'>{user.selectedYear}</td>
+              <td className='user5'>
                 <div className="buttonGroup">
                   <button className="deleteButton" onClick={() => openConfirmationModal(user._id)}>Delete</button>
                   {user.isAdmin ? (
