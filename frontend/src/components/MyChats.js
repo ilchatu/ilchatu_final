@@ -9,7 +9,7 @@ import GroupChatModal from "./miscellaneous/GroupChatModal";
 
 const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
-  const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
+  const { selectedChat, setSelectedChat, user, chats, setChats, notification, setNotification} = ChatState();
 
   const toast = useToast();
 
@@ -74,6 +74,15 @@ const MyChats = ({ fetchAgain }) => {
     }
   };
 
+  const handleChatClick = (chat) => {
+    // Remove red dot when chat is clicked
+    const updatedNotification = notification.filter((notif) => notif.chat._id !== chat._id);
+    setNotification(updatedNotification);
+
+    // Set the selected chat
+    setSelectedChat(chat);
+  };
+
   return (
     <Box
       display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
@@ -122,30 +131,39 @@ const MyChats = ({ fetchAgain }) => {
           <Stack overflowY="scroll">
             {chats.map((chat) => (
               <Box
-                onClick={() => {
-                  if (!chat.isGroupChat) {
-                    if (chat.users && chat.users.length >= 2) {
-                      setSelectedChat(chat);
-                    } else {
-                      // Set a temporary chat with "Deleted User"
-                      setSelectedChat({
-                        _id: "deleted-user",
-                        chatName: "Deleted User",
-                      });
-                    }
-                  } else {
-                    setSelectedChat(chat);
-                  }
-                }}
+                key={chat._id}
+                onClick={() => handleChatClick(chat)} // Handle chat click
+                position="relative" // Ensure the parent chat box is positioned relatively
                 cursor="pointer"
                 bg={selectedChat === chat ? "green" : "#E8E8E8"}
                 color={selectedChat === chat ? "white" : "black"}
                 px={3}
                 py={2}
                 borderRadius="lg"
-                key={chat._id}
                 _hover={{ bg: "green" }}
               >
+
+              {/* Add "New Message" indicator if there's a new message */}
+              {notification.some((notif) => notif.chat._id === chat._id) && (
+                <Box
+                  position="absolute"
+                  top="20%"
+                  right="10px"
+                  transform="translateY(-50%)"
+                  fontSize="12px"
+                  fontWeight="bold"
+                  color="white"
+                  bg="green.500"
+                  borderRadius="10px"
+                  px="3px"
+                  style={{
+                    animation: "scaleEffect 0.5s infinite alternate",
+                  }}
+                >
+                  New Message
+                </Box>
+              )}
+
                 <Text fontFamily="heading">
                   {!chat.isGroupChat
                     ? chat.users && chat.users.length >= 2
