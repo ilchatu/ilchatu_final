@@ -32,6 +32,7 @@ import UserListItem from "../UserAvatar/UserListItem";
 import { getSender } from "../../config/ChatLogics";
 import { Icon } from "@chakra-ui/icon";
 import { FaBullhorn } from "react-icons/fa";
+import moment from "moment";
 
 // Import Chakra UI Modal components
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton } from "@chakra-ui/modal";
@@ -93,7 +94,13 @@ const AnnouncementModal = ({ isOpen, onClose }) => {
                 }}
               >
                 <AlertIcon as={FaBullhorn} color="blue.500" mr={2} />
-                {item?.title}
+                <div>
+                  {item.title}
+                  <br />
+                  <span style={{ fontSize: "0.6em", color: "#666", marginLeft: "260px" }}>
+                    {moment(item.createdAt).format("MMM Do YYYY")}
+                  </span>
+                </div>
               </Alert>
             ))
           )}
