@@ -320,18 +320,22 @@
       />
       <InputRightElement width="3rem">
 
-        <Flex align="center">
-          <Text ml= "5" mt="5px" height={7} fontSize="sm" width="100px" 
-          color={passwordStrengthColor(passwordStrength)} fontWeight="bold">
-            {passwordStrengthLabel(passwordStrength)}
-          </Text>
-
-          <Button h="1.8rem" width={12} size="xs" onClick={() => setShowNewPassword(!showNewPassword)} ml={-12}>
+          <Button h="1.8rem" width={12} size="small" onClick={() => setShowNewPassword(!showNewPassword)} ml={6}>
             {showNewPassword ? "Hide" : "Show"}
           </Button>
-        </Flex>
       </InputRightElement>
     </InputGroup>
+
+    <Text
+  height={1}
+  width="100px"
+  color={passwordStrengthColor(passwordStrength)}
+  fontWeight="bold"
+  style={{ marginLeft: 12, marginBottom: 8, marginTop: -10, padding: 0 }} // Add this style to remove space
+>
+  {passwordStrengthLabel(passwordStrength)}
+</Text>
+
   </FormControl>
 </Tooltip>
 
