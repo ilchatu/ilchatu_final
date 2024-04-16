@@ -309,7 +309,7 @@
               </FormControl> */}
 <Tooltip label="Password must be at least 8 characters long and include alphanumeric, uppercase, lowercase characters, and at least one symbol" placement="top">
   <FormControl>
-    <InputGroup bg="#eee" size="md" borderRadius="10px" width="100%" style={{ marginBottom: 0 }}>
+    <InputGroup size="md">
       <Input
         type={showNewPassword ? "text" : "password"}
         id="newpassword"
@@ -322,7 +322,7 @@
 
         <Flex align="center">
           <Text ml= "5" mt="5px" height={7} fontSize="sm" width="100px" 
-          color={passwordStrengthColor(passwordStrength)}>
+          color={passwordStrengthColor(passwordStrength)} fontWeight="bold">
             {passwordStrengthLabel(passwordStrength)}
           </Text>
 
