@@ -41,20 +41,26 @@ const EditProfile = ({ user, children }) => {
     const validPattern = /^[a-zA-Z]+(\s[a-zA-Z]+)*$/; // Allows alphabetic characters and spaces in between words
     return validPattern.test(name) && name !== "Deleted User";
 }
+  
 function isValidMobileNumber(mobileNumber) {
+  // Allow empty string as a valid input
+  if (mobileNumber === "") {
+    return true;
+  }
+
   const pattern = /^\+?(\d+)$/;
   if (!pattern.test(mobileNumber)) {
-      return false; // Check if the mobile number is digits only (with optional leading +)
+    return false; // Check if the mobile number is digits only (with optional leading +)
   }
 
   if (mobileNumber.startsWith('09')) {
-      return mobileNumber.length === 11; // If starts with '09', must be 11 digits
+    return mobileNumber.length === 11; // If starts with '09', must be 11 digits
   } else if (mobileNumber.startsWith('+639')) {
-      return mobileNumber.length === 13; // If starts with '+63', must be 13 digits
+    return mobileNumber.length === 13; // If starts with '+639', must be 13 digits
   } else {
-      return false; // If starts with neither, it's invalid
+    return false; // If starts with neither, it's invalid
   }
-}
+} 
 
 
   const submitHandler = async () => {
