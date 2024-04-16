@@ -313,7 +313,7 @@
       <Input
         type={showNewPassword ? "text" : "password"}
         id="newpassword"
-        placeholder="New Password"
+        placeholder="Password"
         value={newPassword}
         onChange={handleNewPasswordChange}
         required
