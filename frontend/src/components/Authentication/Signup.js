@@ -134,7 +134,7 @@
         return;
       }
       
-      if (!email.endsWith("com")) {
+      if (!email.endsWith("gmail.com")) {
         debugger
         console.log("Invalid email");
         toast({
@@ -175,8 +175,20 @@
         });
         return;
       }
-      console.log(name, email, newPassword, pic);
 
+  if (passwordStrength < 4) {
+    toast({
+      title: "Password not strong enough",
+      description: "Please use a stronger password",
+      status: "warning",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom",
+    });
+    setPicLoading(false);
+    return;
+  }
+      console.log(name, email, newPassword, pic);
 
       try {
         const config = {
