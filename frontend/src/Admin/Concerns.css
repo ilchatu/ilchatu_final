@@ -1,0 +1,39 @@
+/* Concerns.css */
+
+.bold-text {
+    font-weight: bold;
+  }
+  
+  .white-text {
+    color: white;
+  }
+  
+  .black-text {
+    color: black;
+  }
+  
+  .concern-container {
+    width: 60%;
+    overflow-x: hidden;
+  }
+  
+  .concern-box {
+    border: 1px solid white;
+    background-color: white;
+    margin: 5px;
+    padding: 10px;
+    width: 100%; /* Update width to 100% */
+    overflow-x: hidden;
+    cursor: pointer;
+    word-wrap: break-word; /* Ensure long words are broken */
+    overflow-wrap: break-word; /* Ensure normal word breaks */
+  }
+  
+  @media screen and (max-width: 500px) and (min-width: 300px) {
+    .concern-container {
+      width: auto; /* Change width to auto */
+      max-width: 100%; /* Set max-width to 100% */
+      overflow-x: auto; /* Change overflow to auto */
+    }
+  }
+  
