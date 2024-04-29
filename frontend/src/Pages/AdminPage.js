@@ -4,6 +4,7 @@ import Dashboard from '../Admin/Dashboard';
 import SpamsManagement from '../Admin/SpamsManagement';
 import Announcements from '../Admin/Announcements';
 import Users from '../Admin/Users';
+import Concerns from '../Admin/Concerns';
 
 import './AdminPage.css';
 import { useHistory } from 'react-router-dom';
@@ -17,12 +18,16 @@ const AdminPage = () => {
   const handleComponentChange = (component) => {
     setSelectedComponent(component);
     setIsSidebarOpen(false); // Close the sidebar after selecting a component
-  };
+    if (component === 'Chats') {
+    history.push('/chats'); // Redirect to the chats page
+  }
+};
+  
 
   const handleSidebarIconClick = () => {
     setIsSidebarOpen(!isSidebarOpen);
+    
   };
-
   const handleSidebarClose = () => {
     setIsSidebarOpen(false);
   };
@@ -40,7 +45,11 @@ const AdminPage = () => {
     // { name: 'Admin Management', icon: '⚙️' },
     { name: 'Reports', icon: '📑' },
     { name: 'Announcements', icon: '📢' },
+    {name: 'Concerns', icon: '💭'},
     { name: 'Users', icon: '👥' },
+    {name: 'Chats', icon: '💬'},
+    
+    
   ];
 
   return (
@@ -72,7 +81,7 @@ const AdminPage = () => {
             ))}
           </ul>
           {/* Logout button at the bottom */}
-          <ul style={{ marginTop: '120%', textAlign: 'center'}}>
+          <ul style={{ marginTop: '70%', textAlign: 'center'}}>
             <li onClick={handleLogout} style={{ textDecoration: 'underline', cursor: 'pointer' }}>
               <span role="img" aria-label="Logout">
                 
@@ -90,6 +99,7 @@ const AdminPage = () => {
         {selectedComponent === 'Reports' && <SpamsManagement />}
         {selectedComponent === 'Announcements' && <Announcements />}
         {selectedComponent === 'Users' && <Users />}
+        {selectedComponent === 'Concerns' && <Concerns />}
       </div>
     </div>
   );
