@@ -36,82 +36,61 @@ const Login = () => {
   const openContactModal = () => setIsContactModalOpen(true);
   const closeContactModal = () => setIsContactModalOpen(false);
 
-  const submitHandler = async () => {
-    setLoading(true);
-    if (!email || /*!studentnumber ||*/ !password) {
-      toast({
-        title: "Please Fill in all the Fields",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-      setLoading(false);
-      return;
-    }
+  
+const submitHandler = async () => {
+  setLoading(true);
+  if (!email || !password) {
+    toast({
+      title: "Please Fill in all the Fields",
+      status: "warning",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom",
+    });
+    setLoading(false);
+    return;
+  }
 
-    try {
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-        },
-      };
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
 
-      const { data } = await axios.post(
-        "api/user/login",
-        { email, /*studentnumber,*/ password },
-        config
-      );
-      debugger;
-      console.log(data);
+    const { data } = await axios.post(
+      "/api/user/login",
+      { email, password },
+      config
+    );
 
-      setUser(data);
-      localStorage.setItem("userInfo", JSON.stringify(data));
-      setLoading(false);
-      if (isAdmin) {
-        const is_admin = data.isAdmin;
-        if (is_admin) {
-          toast({
-            title: "Login Successful",
-            status: "success",
-            duration: 5000,
-            isClosable: true,
-            position: "bottom",
-          });
-          history.push("/admin");
-        } else {
-          localStorage.removeItem("userInfo");
-          history.push("/");
-          toast({
-            title: "You are not an admin",
-            status: "success",
-            duration: 5000,
-            isClosable: true,
-            position: "bottom",
-          });
-        }
-      } else if (isUser) {
-        toast({
-          title: "Login Successful",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "bottom",
-        });
-        history.push("/chats");
-      }
-    } catch (error) {
-      toast({
-        title: "Error Occurred!",
-        description: error.response.data.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-      setLoading(false);
-    }
-  };
+    setUser(data);
+    localStorage.setItem("userInfo", JSON.stringify(data));
+    setLoading(false);
+
+    const redirectPath = data.isAdmin ? "/admin" : "/chats";
+    toast({
+      title: "Login Successful",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom",
+    });
+    history.push(redirectPath);
+  } catch (error) {
+    const errorMessage = error?.response?.data?.message || "An unexpected error occurred";
+    toast({
+      title: "Error Occurred!",
+      description: errorMessage,
+      status: "error",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom",
+    });
+    setLoading(false);
+  }
+};
+
 
   return (
     <VStack spacing="5" align="center">
@@ -151,36 +130,7 @@ const Login = () => {
                 </InputRightElement>
               </InputGroup>
             </FormControl>
-            {/* two checkbox to define as user or admin */}
-            <FormControl
-              id="type"
-              style={{
-                margin: "15px 0",
-              }}
-            >
-              {/* deal with checkbox with chakra ui but with react state */}
-
-              <Stack direction="row" align="center">
-                <Checkbox
-                  isChecked={isUser}
-                  onChange={(e) => {
-                    setIsUser(e.target.checked);
-                    setIsAdmin(false);
-                  }}
-                >
-                  User
-                </Checkbox>
-                <Checkbox
-                  isChecked={isAdmin}
-                  onChange={(e) => {
-                    setIsAdmin(e.target.checked);
-                    setIsUser(false);
-                  }}
-                >
-                  Admin
-                </Checkbox>
-              </Stack>
-            </FormControl>
+  
             <FormControl id="ForgetPassword">
               <Link to={`/forgetPassword`}>Forgot Password?</Link>
             </FormControl>
