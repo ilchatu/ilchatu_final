@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Dashboard.css";
+import socketIOClient from "socket.io-client";
 
 const Dashboard = () => {
   const [totalUsers, setTotalUsers] = useState(0);
@@ -9,11 +10,36 @@ const Dashboard = () => {
   const [totalAnnouncements, setTotalAnnouncements] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+
+  useEffect(() => {
+    // Load online users from localStorage on component mount
+    const savedOnlineUsers = localStorage.getItem("onlineUsers");
+    if (savedOnlineUsers) {
+      setOnlineUsers(JSON.parse(savedOnlineUsers));
+    }
+
+    const socket = socketIOClient("https://ilchatu.com");
+    socket.on("connect", () => {
+      console.log("Connected to Socket.IO");
+    });
+
+    socket.on("getOnlineUsers", (users) => {
+      console.log("Received online users:", users);
+      setOnlineUsers(users);
+      // Save online users to localStorage
+      localStorage.setItem("onlineUsers", JSON.stringify(users));
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     const fetchDocumentCount = async (collectionName, setStateFunction) => {
       try {
-        const response = await fetch(`https://ilchatu-a26s.onrender.com/api/count/${collectionName}`);
+        const response = await fetch(`http://localhost:5000/api/count/${collectionName}`);
         const data = await response.json();
         setStateFunction(data.count);
       } catch (error) {
@@ -28,41 +54,16 @@ const Dashboard = () => {
     fetchDocumentCount("messages", setTotalMessages);
     fetchDocumentCount("reports", setTotalReports);
     fetchDocumentCount("chats", setTotalChats);
-    fetchDocumentCount("announcements", setTotalAnnouncements); // Fetch count for announcements
+    fetchDocumentCount("announcements", setTotalAnnouncements);
   }, []);
 
-  useEffect(() => {
-    const animateCount = (element, target) => {
-      const countInterval = 300; // Interval in milliseconds
-      const increment = target / countInterval;
-      let currentValue = 0;
-
-      const interval = setInterval(() => {
-        currentValue += increment;
-        element.textContent = Math.ceil(currentValue);
-
-        if (currentValue >= target) {
-          element.textContent = target;
-          clearInterval(interval);
-        }
-      }, 1);
-    };
-
-    document.querySelectorAll('.total-count').forEach((element) => {
-      const targetValue = parseInt(element.getAttribute('data-target'), 10);
-      animateCount(element, targetValue);
-    });
-  }, [totalUsers, totalMessages, totalChats, totalReports, totalAnnouncements]);
-
   if (loading) {
-    return <p>Loading...</p>; // You can replace this with a loading spinner or animation
+    return <p>Loading...</p>;
   }
 
   if (error) {
     return <p>Error: {error}</p>;
   }
-  
-
 
   return (
     <div className="main_admin">
@@ -79,15 +80,24 @@ const Dashboard = () => {
             <i className="fa fa-users fa-2x text-lightblue" aria-hidden="true"></i>
             <div className="card_inner_admin">
               <p className="text-primary-p">Total Users: </p>
-              <span className="total-count" data-target={totalUsers}>0</span>
+              <span className="total-count">{totalUsers}</span>
             </div>
           </div>
-          
+
+          <div className="card_admin">
+            <i className="fas fa-users fa-2x text-green" aria-hidden="true"></i>
+            <div className="card_inner_admin">
+              <p className="text-primary-p">Active Users: </p>
+              <span className="total-count">{onlineUsers.filter(user => user.userId !== null).length}</span>
+            </div>
+          </div>
+
+          {/* 
           <div className="card_admin">
             <i className="fas fa-comment fa-2x green" aria-hidden="true"></i>
             <div className="card_inner_admin">
                <p className="text-primary-p">Total Chats:</p>
-               <span className="total-count" data-target={totalChats}>0</span>
+               <span className="total-count"> {totalChats} </span>
             </div>
           </div>
 
@@ -95,27 +105,25 @@ const Dashboard = () => {
             <i className="fa fa-comments fa-2x text-red" aria-hidden="true"></i>
             <div className="card_inner_admin">
               <p className="text-primary-p">Total Messages: </p>
-              <span className="total-count" data-target={totalMessages}>0</span>
+              <span className="total-count"> {totalMessages} </span>
             </div>
-          </div>
+          </div> */}
 
           <div className="card_admin">
             <i className="fa fa-ban fa-2x text-red" aria-hidden="true"></i>
             <div className="card_inner_admin">
               <p className="text-primary-p">Total Reports: </p>
-              <span className="total-count" data-target={totalReports}>0</span>
+              <span className="total-count">{totalReports}</span>
             </div>
           </div>
 
-          {/* New card for Total Announcements */}
           <div className="card_admin">
             <i className="fas fa-bullhorn fa-2x text-green" aria-hidden="true"></i>
             <div className="card_inner_admin">
               <p className="text-primary-p">Announcements: </p>
-              <span className="total-count" data-target={totalAnnouncements}>0</span>
+              <span className="total-count">{totalAnnouncements}</span>
             </div>
           </div>
-
         </div>
       </div>
     </div>
