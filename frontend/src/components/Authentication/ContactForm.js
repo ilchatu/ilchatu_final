@@ -9,22 +9,25 @@ import {
     ModalContent,
     ModalHeader,
     ModalBody,
-    ModalCloseButton 
+    ModalCloseButton, 
+    useToast
 } from '@chakra-ui/react';
 
 const ContactForm = ({ isOpen, onClose }) => {
     const form = useRef();
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
     const [formError, setFormError] = useState(false);
+    const toast = useToast();
   
-    const sendEmail = (e) => {
+    const sendEmailAndSaveConcern = (e) => {
         e.preventDefault();
+
+        const senderName = form.current.user_name.value;
+        const senderEmail = form.current.user_email.value;
+        const concern = form.current.message.value;
   
-        if (
-            form.current.user_name.value &&
-            form.current.user_email.value &&
-            form.current.message.value
-        ) {
+        if (senderName && senderEmail && concern ) {
+            //send in email
             emailjs
                 .sendForm('service_mc1qcnu', 'template_v5zpk85', form.current, 'ZzJ4aCgKj4ZmsF3Md')
                 .then(
@@ -34,19 +37,61 @@ const ContactForm = ({ isOpen, onClose }) => {
                         form.current.reset();
                         setFormError(false);
   
-                        setTimeout(() => {
-                            setShowSuccessMessage(false);
-                            onClose(); // Close the modal after success
-                        }, 3000);
-                    },
-                    (error) => {
-                        console.error('FAILED...', error);
-                    }
-                );
-        } else {
-            setFormError(true);
-        }
-    };
+            // save in database
+            fetch('/api/concern/send-concern', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    senderName,
+                    senderEmail,
+                    concern
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                toast({
+                    title: "Success",
+                    description: data.message,
+                    status: "success",
+                    duration: 3000,
+                    isClosable: true,
+                });
+                onClose(); // Close the modal after success
+            })
+            .catch(err => {
+                console.error('Error saving concern:', err);
+                toast({
+                    title: "Error",
+                    description: "Failed to save concern in database.",
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                });
+            });
+
+        }, (error) => {
+            console.error('Email FAILED...', error);
+            toast({
+                title: "Error",
+                description: "Failed to send email.",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
+        });
+} else {
+    setFormError(true);
+    toast({
+        title: "Error",
+        description: "Please fill in all fields.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+    });
+}
+};
   
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
@@ -55,7 +100,7 @@ const ContactForm = ({ isOpen, onClose }) => {
                 <ModalHeader>Contact Us</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
-                    <form ref={form} onSubmit={sendEmail}>
+                    <form ref={form} onSubmit={sendEmailAndSaveConcern}>
                     <label htmlFor="send_to">Recipient:</label>
                         <FormControl id="sendTo" isRequired mt={4}>
                             <Input type="email" name="send_to" value="ilchatu2023@gmail.com" disabled />
