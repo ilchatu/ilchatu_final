@@ -39,7 +39,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchDocumentCount = async (collectionName, setStateFunction) => {
       try {
-        const response = await fetch(`http://localhost:5000/api/count/${collectionName}`);
+        const response = await fetch(`https://ilchatu-a26s.onrender.com/api/count/${collectionName}`);
         const data = await response.json();
         setStateFunction(data.count);
       } catch (error) {
