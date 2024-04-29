@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import socketIOClient from "socket.io-client"
+
+const ENDPOINT = "https://ilchatu.com";
 
 const ChatContext = createContext();
 
@@ -9,8 +12,34 @@ const ChatProvider = ({ children }) => {
   const [chats, setChats] = useState([]);
   const [notification, setNotification] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [socket, setSocket] = useState (null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+
+  console.log("onlineUsers", onlineUsers);
 
   const history = useHistory();
+
+  useEffect(() => {
+    const newSocket = socketIOClient (ENDPOINT);
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.disconnect ();
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (socket === null) return;
+    socket.emit("addNewUser", user?._id);
+    socket.on("getOnlineUsers", (res)=> {
+      setOnlineUsers(res);
+    });
+
+    return () => {
+      socket.off("getOnlineUsers");
+    };
+  }, [socket]);
+
 
   useEffect(() => {
     setIsLoading(true);
@@ -32,6 +61,7 @@ const ChatProvider = ({ children }) => {
         notification,
         setNotification,
         isLoading,
+        onlineUsers,
       }}
     >
       {children}
