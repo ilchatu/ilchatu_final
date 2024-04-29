@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ChatState } from "../Context/ChatProvider";
 import { Box, Button, Stack, Text, useToast } from "@chakra-ui/react";
 import axios from "axios";
@@ -6,12 +6,26 @@ import { AddIcon } from "@chakra-ui/icons";
 import ChatLoading from "./ChatLoading";
 import { getSender } from "../config/ChatLogics";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
+import socketIOClient from "socket.io-client";
 
 const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
-  const { selectedChat, setSelectedChat, user, chats, setChats, notification, setNotification} = ChatState();
+  const { selectedChat, setSelectedChat, user, users, chats, setChats, notification, setNotification,} = ChatState();
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const socket = useRef ();
 
   const toast = useToast();
+
+  useEffect(() => {
+    socket.current = socketIOClient('https://ilchatu.com');
+    socket.current.emit("addNewUser", user._id);
+    socket.current.on("getOnlineUsers", (users) => {
+      // Filter out the current user's status
+      const filteredOnlineUsers = users.filter(u => u.userId !== user._id);
+      setOnlineUsers(filteredOnlineUsers);
+    });
+  }, [user]);
+  
 
   const fetchChats = async () => {
     try {
@@ -83,6 +97,23 @@ const MyChats = ({ fetchAgain }) => {
     setSelectedChat(chat);
   };
 
+  const isSenderOnline = (chat) => {
+    if (chat.users && chat.users.length >= 1) {
+      // Get the IDs of all users in the chat
+      const userIds = chat.users.map(user => user._id);
+      // Check if any of the user IDs are present in the onlineUsers array
+      return userIds.some(userId => {
+        // Check if the user ID is not the same as the current user's ID
+        return userId !== user._id && onlineUsers.some(onlineUser => onlineUser.userId === userId);
+      });
+    }
+    
+    return false; // Return false if there are no users in the chat
+  };
+  
+  
+
+  
   return (
     <Box
       display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
@@ -116,7 +147,7 @@ const MyChats = ({ fetchAgain }) => {
           </Button>
         </GroupChatModal>
       </Box>
-
+  
       <Box
         display="flex"
         flexDir="column"
@@ -141,39 +172,48 @@ const MyChats = ({ fetchAgain }) => {
                 py={2}
                 borderRadius="lg"
                 _hover={{ bg: "green" }}
+                alignItems="center"
               >
 
-              {/* Add "New Message" indicator if there's a new message */}
-              {notification.some((notif) => notif.chat._id === chat._id) && (
-                <Box
-                  position="absolute"
-                  top="20%"
-                  right="10px"
-                  transform="translateY(-50%)"
-                  fontSize="12px"
-                  fontWeight="bold"
-                  color="white"
-                  bg="green.500"
-                  borderRadius="10px"
-                  px="3px"
-                  style={{
-                    animation: "scaleEffect 0.5s infinite alternate",
-                  }}
-                >
-                  New Message
-                </Box>
-              )}
-
-                <Text fontFamily="heading">
+                <Text fontFamily="heading" ml={!chat.isGroupChat ? -1 : 3} display="flex" alignItems="center">
+                  {/* Online/Offline indicator */}
+                  {!chat.isGroupChat && (
+                    <Box h="8px" w="8px" bg={isSenderOnline(chat) ? "green.500" : "gray.300"} borderRadius="50%" mr={2} />
+                  )}
+                  {/* Sender's name */}
                   {!chat.isGroupChat
                     ? chat.users && chat.users.length >= 2
                       ? getSender(loggedUser, chat.users)
                       : "Deleted User"
                     : chat.chatName}
                 </Text>
+
+
+  
+                {/* Add "New Message" indicator if there's a new message */}
+                {notification.some((notif) => notif.chat._id === chat._id) && (
+                  <Box
+                    position="absolute"
+                    top="20%"
+                    right="10px"
+                    transform="translateY(-50%)"
+                    fontSize="12px"
+                    fontWeight="bold"
+                    color="white"
+                    bg="green.500"
+                    borderRadius="10px"
+                    px="3px"
+                    style={{
+                      animation: "scaleEffect 0.5s infinite alternate",
+                    }}
+                  >
+                    New Message
+                  </Box>
+                )}
+  
                 {chat.latestMessage && (
-                  <Box display="flex" justifyContent="space-between">
-                    <Text fontSize="xs">
+                  <Box display="flex" justifyContent="space-between" width="100%">
+                    <Text fontSize="xs" ml={3}>
                       <b>
                         {chat.latestMessage.sender.name === "Your Name"
                           ? "You"
@@ -197,7 +237,7 @@ const MyChats = ({ fetchAgain }) => {
         )}
       </Box>
     </Box>
-  );
+  );  
 };
 
 export default MyChats;
