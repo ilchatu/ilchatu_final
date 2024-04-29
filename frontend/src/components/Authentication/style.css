@@ -48,7 +48,7 @@
 }
 
 .container-auth button{
-    background-color: rgb(18, 172, 12);
+    background-color: rgb(25, 161, 20);
     color: #fff;
     font-size: 12px;
     padding: 5px 15px;
@@ -118,64 +118,7 @@
     top: 8%
 }
 
-@media screen and (max-width: 500px) and (min-width: 300px) {
-    .sign-up{
-        left: 128px;
-        width: 65%
-    } 
-    .sign-in{
-        width: 68%;
-        left: -9%;
-    }
-    .container-auth{
-        width: 300px;
-    }
-    
-  }
-  @media screen and (max-width: 768px) and (min-width: 500px) {
-    .sign-up{
-        left: 180px;
-        width: 60%;
-    }
-    .sign-in{
-        width: 63%;
-        left: -6%;
-    }
-    .showhide{
-        width: 3rem;
-    }
-    .container-auth{
-        width: 400px;
-    }
 
-  }
-  @media screen and (max-width: 900px) and (min-width: 768px) {
-    .sign-up{
-        left: 285px;
-        width: 55%;
-    }
-    .sign-in{
-        width: 58%;
-        left: -4%;
-    }
-    .container-auth{
-        width: 600px;
-    }
-  }
-
-  @media screen and (max-width: 1200px) and (min-width: 900px) {
-    .sign-up{
-        left: 335px;
-        width: 55%
-    }
-    .sign-in{
-        width: 55%;
-        left: -2%;
-    }
-    .container-auth{
-        width: 700px;
-    }
-  }
  
 /* .container.active .sign-up{
     transform: translateX(100%);
@@ -206,7 +149,7 @@
     /* transition: all 0.6s ease-in-out; */
     border-radius: 150px 0 0 100px;
     z-index: 1000;
-    background-color: rgb(106, 248, 101);
+    background-color: rgb(252, 252, 252);
 }
 
 .container-auth.active .toggle-container{
@@ -291,4 +234,74 @@
 .contact-section {
     position: relative;
     top: 120px; /* Adjust the value as needed */
+  }
+  
+  @media screen and (max-width: 500px) and (min-width: 300px) {
+    .sign-up{
+        left: 65px;
+        width: 87%
+    } 
+    .sign-in{
+        width: 87%;
+        left: -11%;
+    }
+    .container-auth{
+        width: 300px;
+    }
+
+    .toggle-container-signup{
+        right: 67%;
+        width: 33%;
+    }
+    .toggle-container{
+        left: 67%;
+        width: 33%;
+    }
+    
+
+    
+  }
+  @media screen and (max-width: 768px) and (min-width: 500px) {
+    .sign-up{
+        left: 180px;
+        width: 60%;
+    }
+    .sign-in{
+        width: 63%;
+        left: -6%;
+    }
+    .showhide{
+        width: 3rem;
+    }
+    .container-auth{
+        width: 400px;
+    }
+
+  }
+  @media screen and (max-width: 900px) and (min-width: 768px) {
+    .sign-up{
+        left: 285px;
+        width: 55%;
+    }
+    .sign-in{
+        width: 58%;
+        left: -4%;
+    }
+    .container-auth{
+        width: 600px;
+    }
+  }
+
+  @media screen and (max-width: 1200px) and (min-width: 900px) {
+    .sign-up{
+        left: 335px;
+        width: 55%
+    }
+    .sign-in{
+        width: 55%;
+        left: -2%;
+    }
+    .container-auth{
+        width: 700px;
+    }
   }
