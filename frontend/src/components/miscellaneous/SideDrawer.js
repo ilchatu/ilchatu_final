@@ -37,6 +37,7 @@ import moment from "moment";
 // Import Chakra UI Modal components
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton } from "@chakra-ui/modal";
 
+
 const AnnouncementModal = ({ isOpen, onClose }) => {
   const [announcement, setAnnouncement] = useState([]);
   const [loading, setLoading] = useState(false); // State for loading indicator
@@ -132,6 +133,7 @@ const SideDrawer = () => {
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
     history.push("/");
+    window.location.reload();
   };
 
   const handleSearch = async () => {
@@ -198,6 +200,11 @@ const SideDrawer = () => {
         position: "bottom-left",
       });
     }
+  };
+
+  const navigateToAdmin = () => {
+    // Navigation to admin dashboard
+    history.push("/admin");
   };
 
   const [announcementModalOpen, setAnnouncementModalOpen] = useState(false);
@@ -288,6 +295,13 @@ const SideDrawer = () => {
               <EditProfile user={user}>
                 <MenuItem>Edit Profile</MenuItem>
               </EditProfile>
+
+              {user.isAdmin && (
+              <MenuItem onClick={navigateToAdmin}>
+                Admin Dashboard
+              </MenuItem>
+            )}
+
               <MenuDivider />
               <MenuItem onClick={logoutHandler}>Logout</MenuItem>
             </MenuList>
