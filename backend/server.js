@@ -13,6 +13,7 @@ const forgetRouthes = require("./routes/ForgetRothes");
 const announcementRoute = require("./routes/announcementRoutes");
 const reportRoute = require("./routes/reportRoute");
 const User = require("./models/userModel"); // Adjust the path based on your project structure
+const concernRoutes = require('./routes/concernsRoutes'); //concernsRoute
 const path = require("path");
 
 dotenv.config();
@@ -32,6 +33,7 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/announcement", announcementRoute);
 app.use("/api/report", reportRoute);
+app.use('/api/concern', concernRoutes); //concerns Route
 
 // for collection count using mongoose //
 app.get("/api/count/:collectionName", async (req, res) => {
@@ -185,14 +187,27 @@ const io = require("socket.io")(server, {
   },
 });
 
+let onlineUsers = [];
+
 io.on("connection", (socket) => {
-  console.log("Connected to socket.io");
+  console.log("Connected to socket.io" + socket.id);
 
   socket.on("setup", (userData) => {
     socket.join(userData._id);
     socket.emit("connected");
   });
 
+  socket.on("addNewUser", (userId) => {
+    !onlineUsers.some((user) => user.userId === userId) &&
+    onlineUsers.push ({
+      userId: userId,
+      socketId: socket.id,
+    });
+    console.log ("onlineUsers", onlineUsers);
+
+    io.emit("getOnlineUsers", onlineUsers);
+  });
+  
   socket.on("join chat", (room) => {
     socket.join(room);
     console.log("User Joined Room: " + room);
@@ -212,8 +227,10 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.off("setup", () => {
-    console.log("USER DISCONNECTED");
-    socket.leave(userData._id);
+  socket.on("disconnect", () => {
+    onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
+    io.emit("getOnlineUsers", onlineUsers);
+    
+    console.log("USER DISCONNECTED" + socket.id);
   });
 });
