@@ -8,12 +8,15 @@ import {
   Th,
   Td,
   TableContainer,
+  useToast // Import useToast hook from Chakra UI
 } from "@chakra-ui/react";
 import axios from "axios";
 import moment from "moment";
 
 const SpamsManagement = () => {
   const [report, setReport] = useState([]);
+  const toast = useToast(); // Initialize toast hook
+
   useEffect(() => {
     axios
       .get("/api/report")
@@ -26,6 +29,28 @@ const SpamsManagement = () => {
       });
   }, []);
 
+  const handleDelete = async (messageId) => {
+    try {
+      // Make a PUT request to mark the message as deleted
+      const response = await axios.put(`/api/message/${messageId}/mark-as-deleted`);
+      // If successful, update the UI or perform any necessary actions
+      console.log("Message marked as deleted:", messageId);
+      
+      // Show toast notification for successful deletion
+      toast({
+        title: "Success!",
+        description: "Message marked as deleted successfully.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+
+    } catch (error) {
+      console.error("Error marking message as deleted:", error);
+      // Handle errors, such as displaying an error message to the user
+    }
+  };
+
   return (
     <div className="main__container1">
       <div className="main__title">
@@ -37,9 +62,7 @@ const SpamsManagement = () => {
       {report?.length ? (
         <div className="spam">
           <div className="table-scroll">
-            <TableContainer
-              className="spam-table" // Add a custom class to the TableContainer
-            >
+            <TableContainer className="spam-table">
               <Table variant="simple">
                 <Thead>
                   <Tr>
@@ -47,6 +70,7 @@ const SpamsManagement = () => {
                     <Th>Reported Message</Th>
                     <Th>Reported User</Th>
                     <Th>User Email</Th>
+                    <Th>Action</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
@@ -60,6 +84,22 @@ const SpamsManagement = () => {
                       </Td>
                       <Td>{item?.user?.name}</Td>
                       <Td>{item?.user?.email}</Td>
+                      <Td>
+                        {item.deleted ? (
+                          <span>Deleted</span>
+                        ) : (
+                          <button
+                            className="delete-button" // Add CSS class here
+                            onClick={() => {
+                              console.log("Message ID:", item?.messageId);
+                              handleDelete(item?.messageId);
+                            }}
+                            disabled={item.deleted}
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </Td>
                     </Tr>
                   ))}
                 </Tbody>
