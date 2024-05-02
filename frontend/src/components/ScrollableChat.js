@@ -102,12 +102,14 @@ const ScrollableChat = ({ messages, setLoading, selectedChat, setMessages }) => 
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [reportMessage, setReportMessage] = useState("");
   const [reportSender, setReportSender] = useState("");
+  const [reportMessageId, setReportMessageId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteMessageId, setDeleteMessageId] = useState("");
 
-  const openReportModal = (message, sender) => {
+  const openReportModal = (message, sender, messageId) => {
     setReportMessage(message);
     setReportSender(sender);
+    setReportMessageId(messageId);
     setIsReportModalOpen(true);
   };
 
@@ -141,6 +143,7 @@ const ScrollableChat = ({ messages, setLoading, selectedChat, setMessages }) => 
         {
           message: reportMessage,
           user: reportSender,
+          messageId: reportMessageId,
         },
         config
       );
@@ -262,8 +265,10 @@ const ScrollableChat = ({ messages, setLoading, selectedChat, setMessages }) => 
               }}
               onMouseEnter={() => handleMouseEnter(m._id)}
               onMouseLeave={() => handleMouseLeave(m._id)}
-            >
-              {isValidImageUrl(m.content) ? (
+              >
+              {m.deleted ? (
+          <p style={{ fontStyle: "italic", color: "gray" }}>Message Unavailable</p>
+        ) : isValidImageUrl(m.content) ? (
                 <img
                   src={m.content}
                   alt="Received Image"
@@ -333,7 +338,7 @@ const ScrollableChat = ({ messages, setLoading, selectedChat, setMessages }) => 
                         display: "flex",
                         alignItems: "center",
                       }}
-                      onClick={() => openReportModal(m?.content, m?.sender?._id)}
+                      onClick={() => openReportModal(m?.content, m?.sender?._id, m._id)}
                     >
                       <span style={{ marginRight: "5px" }}>
                         <i className="fas fa-flag"></i>
