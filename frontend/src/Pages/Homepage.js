@@ -34,7 +34,6 @@ const Homepage = () => {
         <img src={logoImage} alt="iLearnU Logo" class="logo"/>
   </Box> */}
       <Box
-        bg="rgb(18, 172, 20);"
         w="auto"
         h="auto"
         p={4}
