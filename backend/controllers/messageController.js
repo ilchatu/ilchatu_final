@@ -75,5 +75,28 @@ const deleteMessage = asyncHandler(async (req, res) => {
   }
 });
 
+const markAsDeleted = asyncHandler(async (req, res) => {
+  const messageId = req.params.messageId;
+  console.log("Received request to mark message as deleted with ID:", messageId);
 
-module.exports = { allMessages, sendMessage, deleteMessage };
+  try {
+    // Find the message by its ID
+    const message = await Message.findById(messageId);
+    if (!message) {
+      console.log("Message not found with ID:", messageId);
+      return res.status(404).json({ message: "Message not found" });
+    }
+
+
+    // Update the message document to mark it as deleted
+    message.deleted = true;
+    await message.save();
+
+    res.json({ message: "Message marked as deleted successfully" });
+  } catch (error) {
+    console.error("Error marking message as deleted:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+module.exports = { allMessages, sendMessage, deleteMessage, markAsDeleted };
