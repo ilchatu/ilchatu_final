@@ -96,31 +96,39 @@ const ContactForm = ({ isOpen, onClose }) => {
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
-            <ModalContent>
-                <ModalHeader>Contact Us</ModalHeader>
+            <ModalContent style={{ padding: '10px', borderRadius: '20px'}}>
+            <ModalHeader
+            fontSize="30px"
+            fontFamily="'Montserrat', sans-serif"
+            display="flex"
+            justifyContent="center"
+            color="rgb(12, 91, 9, 0.9)">
+                Contact Us
+            </ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
                     <form ref={form} onSubmit={sendEmailAndSaveConcern}>
-                    <label htmlFor="send_to">Recipient:</label>
+                    <label htmlFor="send_to"
+        style={{ fontSize: '20px'}}>Recipient:</label>
                         <FormControl id="sendTo" isRequired mt={4}>
-                            <Input type="email" name="send_to" value="ilchatu2023@gmail.com" disabled />
+                        <Input type="email" name="send_to" bg="#eee" value="ilchatu2023@gmail.com" disabled />
                         </FormControl>
                         <FormControl id="name" isRequired mt={4}>
-                            <Input type="text" name="user_name" placeholder="Your Name" />
+                        <Input type="text" name="user_name" bg="#eee" placeholder="Your Name" />
                         </FormControl>
                         <FormControl id="email" isRequired mt={4}>
-                            <Input type="email" name="user_email" placeholder="Your Email" />
+                        <Input type="email" name="user_email" bg="#eee" placeholder="Your Email" />
                         </FormControl>
                         <FormControl id="message" isRequired mt={4}>
-                            <textarea 
-                                name="message" 
-                                placeholder="Your Message" 
-                                style={{ width: '100%', height: '100px' }} // Adjust the width and height here
-                            />
+                        <textarea 
+            name="message" 
+            placeholder="Your Message" 
+            style={{ backgroundColor: '#eee', width: '100%', height: '100px', padding: '8px', fontSize: '16px' }}
+  />
                         </FormControl>
-                        <Button colorScheme="green" width="100%" mt={4} type="submit">
-                            Send Message
-                        </Button>
+                        <Button colorScheme="green" width="100%" mt={4} mb={4} type="submit"  style={{ height: '50px', fontSize: '17px', fontFamily: 'Arial',    background: 'linear-gradient(to right, #313431, #059a05)'}}>
+          Send Message
+        </Button>
                     </form>
                     {formError && <p>Please fill in all fields.</p>}
                     {showSuccessMessage && <p>Message sent successfully!</p>}
