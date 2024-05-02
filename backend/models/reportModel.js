@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const reportModel = mongoose.Schema(
-  {
+    {
     message: {
       type: "String",
       required: true,
@@ -11,7 +11,12 @@ const reportModel = mongoose.Schema(
       ref: "User",
       required: true,
     },
-  },
+    messageId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
+
+    },
   {
     timestamps: true,
   }
