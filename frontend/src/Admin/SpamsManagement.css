@@ -91,3 +91,17 @@
     text-align: center;
   }
 }
+
+.delete-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.delete-button:hover {
+  background-color: darkred;
+}
+
