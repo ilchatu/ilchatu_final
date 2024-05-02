@@ -30,7 +30,7 @@
 }
 
 .container-auth p{
-    font-size: 14px;
+    font-size: 16px;
     line-height: 20px;
     letter-spacing: 0.3px;
     margin: 20px 0;
@@ -42,15 +42,15 @@
 
 .container-auth a{
     color: #333;
-    font-size: 13px;
+    font-size: 16px;
     text-decoration: none;
     margin: 15px 0 10px;
 }
 
 .container-auth button{
-    background-color: rgb(25, 161, 20);
+    background: linear-gradient(to right, #313431, #059a05);
     color: #fff;
-    font-size: 12px;
+    font-size: 13px;
     padding: 5px 15px;
     border: 1px solid transparent;
     border-radius: 8px;
@@ -81,23 +81,26 @@
     border: none;
     margin: 8px 0;
     padding: 10px 15px;
-    font-size: 13px;
+    font-size: 15px;
     border-radius: 8px;
     width: 100%;
     outline: none;
+    
 }
 
 .form-container{
     position: absolute;
-    top: 0;
+    top: 0; 
     height: 100%;
     transition: all 0.6s ease-in-out;
+
 }
 
 .sign-in{
     left: 0;
     width: 50%;
     z-index: 2;
+    
 }
 
 
@@ -114,8 +117,8 @@
 
 .showhide{
     width: 3rem;
-    left: 25%;
-    top: 8%
+    left:25%;
+    top: 8%;
 }
 
 
@@ -160,7 +163,7 @@
 .toggle{
     background-color: rgb(18, 172, 12);
     height: 160%;
-    background: linear-gradient(to right, #17b717, #06ae06);
+    background: linear-gradient(to right, #1a1b1a, #059a05);
     color: #fff;
     position: relative;
     left: -100%;
@@ -224,11 +227,12 @@
 }
 
 #loginHeading {
-  font-size: 25px; /* Change this value to adjust the font size */
+  font-size: 35px; /* Change this value to adjust the font size */
   font-family: 'Montserrat', sans-serif;
   font-weight: bold;
   opacity: 0.7;
   color: rgb(12, 91, 9);
+  margin-top: 10px;
 }
 
 .contact-section {
@@ -237,45 +241,65 @@
   }
   
   @media screen and (max-width: 500px) and (min-width: 300px) {
+    
     .sign-up{
-        left: 65px;
-        width: 87%
+        left: -15px;
+        width: 110%
     } 
     .sign-in{
-        width: 87%;
-        left: -11%;
+        width: 110%;
+        margin-top: 5%;
+        left: -6%;
     }
     .container-auth{
         width: 300px;
     }
 
     .toggle-container-signup{
-        right: 67%;
-        width: 33%;
+        right: 100%;
+        width:100%;
     }
     .toggle-container{
-        left: 67%;
-        width: 33%;
-    }
-    
-
-    
+        left: 100%;
+        width: 100%;
+        align-items: center;
+    justify-content: center;
+    -ms-flex-pack: center;
   }
+  .logo2{
+    width: 150px; 
+    height: auto;
+    align-items: center;
+    justify-content: center;
+    flex-direction: flex;
+      }
+
+}
   @media screen and (max-width: 768px) and (min-width: 500px) {
     .sign-up{
         left: 180px;
         width: 60%;
+       
     }
     .sign-in{
+        margin-top: 33%;
         width: 63%;
         left: -6%;
+      
     }
     .showhide{
         width: 3rem;
     }
     .container-auth{
         width: 400px;
+
     }
+
+    h2,.contact-section2, .logo2{
+        display: none;
+
+    }
+
 
   }
   @media screen and (max-width: 900px) and (min-width: 768px) {
@@ -286,13 +310,17 @@
     .sign-in{
         width: 58%;
         left: -4%;
+        margin-top: 24%;
     }
     .container-auth{
         width: 600px;
     }
+    h2,.contact-section2, .logo2{
+        display: none;
+    }
   }
 
-  @media screen and (max-width: 1200px) and (min-width: 900px) {
+  @media screen and (min-width: 900px) {
     .sign-up{
         left: 335px;
         width: 55%
@@ -300,8 +328,20 @@
     .sign-in{
         width: 55%;
         left: -2%;
+        margin-top: 23%;
     }
     .container-auth{
         width: 700px;
     }
+    h2,.contact-section2, .logo2{
+        display: none;
+    }
+  }
+
+  .modal-container {
+    width: 400px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
