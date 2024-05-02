@@ -97,7 +97,18 @@ const submitHandler = async () => {
       <div class="container-auth" id="container-auth">
         <div class="form-container sign-in">
           <form>
+          <Box mb={2}>
+                  <img
+                    src={logoImage}
+                    alt="iLearnU Logo"
+                    className="logo2"
+                    
+                  />
+                  <h2> Hi, aLUmni</h2>
+                </Box>
             <div class="loginContainer">
+            
+
               <h1 id="loginHeading">Login</h1>
             </div>
             <FormControl id="email" isRequired>
@@ -144,6 +155,13 @@ const submitHandler = async () => {
             >
               Login
             </Button>
+            <div style={{ marginTop: "auto" }}>
+                  {/* Contact Us text */}
+                    <div className="contact-section2" onClick={openContactModal} 
+                    style={{ textAlign: "center", cursor: "pointer", fontSize: "24px", color: "black", padding: "20px 0" }}>
+                        <p>Contact Us!</p>
+                    </div>
+              </div>
 
             {/* <Link
               to={`Admin/AdminManagement`}
@@ -152,6 +170,7 @@ const submitHandler = async () => {
               Admin Page
             </Link> */}
           </form>
+
         </div>
         
         <div class="toggle-container">
