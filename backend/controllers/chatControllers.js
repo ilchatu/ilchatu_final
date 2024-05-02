@@ -51,6 +51,23 @@ const accessChat = asyncHandler(async (req, res) => {
 
 });
 
+//description:     Remove chat for a user (Soft Delete)
+//route:           POST /api/chat/delete
+const removeChatForUser = asyncHandler(async (req, res) => {
+  const { chatId } = req.body;
+
+  try {
+    // Remove the chat completely from the database
+    await Chat.findByIdAndDelete(chatId);
+
+    // Send a success response
+    res.status(200).json({ message: "Chat deleted successfully" });
+  } catch (error) {
+    // If an error occurs, return 400 status with the error message
+    res.status(400).json({ message: error.message });
+  }
+});
+
 //description:     Fetch all chats for a user
 //route:        GET /api/chat/
 const fetchChats = asyncHandler(async (req, res) => {
@@ -195,5 +212,6 @@ module.exports = {
     createGroupChat, 
     renameGroup, 
     addToGroup, 
-    removeFromGroup 
+    removeFromGroup,
+    removeChatForUser
 };
